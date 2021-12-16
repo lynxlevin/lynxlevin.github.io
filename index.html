@@ -2,70 +2,11 @@
 <html>
   <head>
     <title>XmasAr</title>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <!-- <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-    <style>
-      .snow-container {
-  position: relative;
-  height: 100vh; /* コンテナの高さ */
-  width: 100%; /* コンテナの横幅 */
-  overflow: hidden;
-  background-color: #000; /* コンテナの背景 */
-}
-
-/* ===== 雪のスタイル ===== */
-.snow {
-  background-color: #fff; /* 雪の色 */
-  border-radius: 50%;
-  position: absolute;
-  animation: animate-snow 10s linear;
-}
-
-/* ===== 雪のアニメーション ===== */
-@keyframes animate-snow {
-  0% {
-    opacity: 0;
-    top: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    top: 100vh;
-  }
-}
-
-.demo {
-  position: relative;
-}
-.demo .button-container {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  display: flex;
-  justify-content: space-around;
-}
-.demo .button-container .button {
-  width: 150px;
-  height: 70px;
-  font-size: 20px;
-  background-color: green;
-  border: 3px solid red;
-  color: white;
-  border-radius: 50px;
-  font-weight: 700;
-}
-
-    </style>
+    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
   </head>
 
   <body>
@@ -78,51 +19,4 @@
       </div>
     </div>
   </body>
-  <script>
-    window.addEventListener('DOMContentLoaded', ()=> {
-  // コンテナを指定
-  const container = document.querySelector('.snow-container');
-  const letItSnow = document.querySelector('.let-it-snow');
-  let count = 0;
-
-  letItSnow.addEventListener("click", () => {
-    if (count < 3) {
-      count++;
-      // 雪を生成する間隔をミリ秒で指定
-      setInterval(() => {createSnow(container)}, 100);
-    }
-  });
-
-  const jingleBells = document.querySelector('.jingle-bells');
-  const bellSound = new Audio('bells.mp3');
-
-  jingleBells.addEventListener("click", () => {
-    if (!jingleBells.classList.contains('playing')) {
-      jingleBells.classList.add('playing');
-      bellSound.currentTime = 1;
-      bellSound.play();
-    } else {
-      jingleBells.classList.remove('playing');
-      bellSound.pause();
-    }
-  });
-
-  const createSnow = (container) => {
-  const snowEl = document.createElement('span');
-  snowEl.className = 'snow';
-  const minSize = 5;
-  const maxSize = 10;
-  const size = Math.random() * (maxSize - minSize) + minSize;
-  snowEl.style.width = `${size}px`;
-  snowEl.style.height = `${size}px`;
-  snowEl.style.left = Math.random() * 100 + '%';
-  container.appendChild(snowEl);
-
-  // 一定時間が経てば雪を消す
-  setTimeout(() => {
-    snowEl.remove();
-  }, 10000);
-}
-});
-  </script>
 </html>
