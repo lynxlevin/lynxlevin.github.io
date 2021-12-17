@@ -14,11 +14,14 @@
         init: function () {
           const marker = this.el;
           const container = document.querySelector('.snow-container');
+        const bellSound = new Audio('assets/bells.mp3');
 
           // マーカーを検出したイベントの登録
           marker.addEventListener('markerFound', async function () {
             console.log(marker.dataset.contentid);
             setInterval(() => {createSnow(container)}, 100);
+            bellSound.currentTime = 1;
+            bellSound.play();
           });
         }
       });
