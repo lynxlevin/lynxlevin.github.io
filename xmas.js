@@ -1,44 +1,44 @@
-// class Aframe {
-//   constructor() {
-//       this.register();
-//   }
+class Aframe {
+  constructor() {
+      this.register();
+  }
 
-//   register() {
-//     //マーカーの前に読み込まないと動かない
-//     AFRAME.registerComponent('registerevents', {
-//       init: function () {
-//         const marker = this.el;
-//         const container = document.querySelector('.snow-container');
+  register() {
+    //マーカーの前に読み込まないと動かない
+    AFRAME.registerComponent('registerevents', {
+      init: function () {
+        const marker = this.el;
+        const container = document.querySelector('.snow-container');
 
-//         // マーカーを検出したイベントの登録
-//         marker.addEventListener('markerFound', async function () {
-//           console.log(marker.dataset.contentid);
-//           setInterval(() => {createSnow(container)}, 100);
-//         });
+        // マーカーを検出したイベントの登録
+        marker.addEventListener('markerFound', async function () {
+          console.log(marker.dataset.contentid);
+          // setInterval(() => {createSnow(container)}, 100);
+        });
 
-//         // マーカーを見失ったイベントの登録
-//         marker.addEventListener('markerLost', async function () {
-//         });
-//       }
-//     });
-//     // AFRAME.registerComponent('videohandler', {
-//     //     init: function () {
-//     //         var marker = this.el;
-//     //         this.vid = document.querySelector("#vid");
+        // マーカーを見失ったイベントの登録
+        marker.addEventListener('markerLost', async function () {
+        });
+      }
+    });
+    // AFRAME.registerComponent('videohandler', {
+    //     init: function () {
+    //         var marker = this.el;
+    //         this.vid = document.querySelector("#vid");
 
-//     //         marker.addEventListener('markerFound', function () {
-//     //             this.toggle = true;
-//     //             this.vid.play();
-//     //         }.bind(this));
+    //         marker.addEventListener('markerFound', function () {
+    //             this.toggle = true;
+    //             this.vid.play();
+    //         }.bind(this));
 
-//     //         marker.addEventListener('markerLost', function () {
-//     //             this.toggle = false;
-//     //             this.vid.pause();
-//     //         }.bind(this));
-//     //     },
-//     // });
-//   }
-// }
+    //         marker.addEventListener('markerLost', function () {
+    //             this.toggle = false;
+    //             this.vid.pause();
+    //         }.bind(this));
+    //     },
+    // });
+  }
+}
 
 
 
