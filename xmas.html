@@ -14,7 +14,7 @@
         init: function () {
           const marker = this.el;
           const container = document.querySelector('.snow-container');
-        const bellSound = new Audio('assets/bells.mp3');
+          const bellSound = document.querySelector("#bgm1");
 
           // マーカーを検出したイベントの登録
           marker.addEventListener('markerFound', async function () {
@@ -115,5 +115,8 @@
         </a-marker>
         <a-entity camera></a-entity>
       </a-scene>
+      <audio id="bgm1" preload loop>
+        <source src="assets/bells.mp3" type="audio/mp3">
+      </audio>
   </body>
 </html>
