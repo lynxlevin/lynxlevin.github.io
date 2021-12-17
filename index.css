@@ -4,12 +4,12 @@
   height: -webkit-fill-available;
   width: 100%; /* コンテナの横幅 */
   overflow: hidden;
+  background-color: #000; /* コンテナの背景 */
 }
 
 /* ===== 雪のスタイル ===== */
 .snow {
-  /* background-color: #fff; */
-  background-color: yellow;
+  background-color: #fff; /* 雪の色 */
   border-radius: 50%;
   position: absolute;
   animation: animate-snow 10s linear;
