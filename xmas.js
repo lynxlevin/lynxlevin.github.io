@@ -1,44 +1,44 @@
-class Aframe {
-  constructor() {
-      this.register();
-  }
+// class Aframe {
+//   constructor() {
+//       this.register();
+//   }
 
-  register() {
-    //マーカーの前に読み込まないと動かない
-    AFRAME.registerComponent('registerevents', {
-      init: function () {
-        const marker = this.el;
-        const container = document.querySelector('.snow-container');
+//   register() {
+//     //マーカーの前に読み込まないと動かない
+//     AFRAME.registerComponent('registerevents', {
+//       init: function () {
+//         const marker = this.el;
+//         const container = document.querySelector('.snow-container');
 
-        // マーカーを検出したイベントの登録
-        marker.addEventListener('markerFound', async function () {
-          console.log(marker.dataset.contentid);
-          // setInterval(() => {createSnow(container)}, 100);
-        });
+//         // マーカーを検出したイベントの登録
+//         marker.addEventListener('markerFound', async function () {
+//           console.log(marker.dataset.contentid);
+//           // setInterval(() => {createSnow(container)}, 100);
+//         });
 
-        // マーカーを見失ったイベントの登録
-        marker.addEventListener('markerLost', async function () {
-        });
-      }
-    });
-    // AFRAME.registerComponent('videohandler', {
-    //     init: function () {
-    //         var marker = this.el;
-    //         this.vid = document.querySelector("#vid");
+//         // マーカーを見失ったイベントの登録
+//         marker.addEventListener('markerLost', async function () {
+//         });
+//       }
+//     });
+//     // AFRAME.registerComponent('videohandler', {
+//     //     init: function () {
+//     //         var marker = this.el;
+//     //         this.vid = document.querySelector("#vid");
 
-    //         marker.addEventListener('markerFound', function () {
-    //             this.toggle = true;
-    //             this.vid.play();
-    //         }.bind(this));
+//     //         marker.addEventListener('markerFound', function () {
+//     //             this.toggle = true;
+//     //             this.vid.play();
+//     //         }.bind(this));
 
-    //         marker.addEventListener('markerLost', function () {
-    //             this.toggle = false;
-    //             this.vid.pause();
-    //         }.bind(this));
-    //     },
-    // });
-  }
-}
+//     //         marker.addEventListener('markerLost', function () {
+//     //             this.toggle = false;
+//     //             this.vid.pause();
+//     //         }.bind(this));
+//     //     },
+//     // });
+//   }
+// }
 
 
 
@@ -46,25 +46,10 @@ class Aframe {
 
 
 window.addEventListener('DOMContentLoaded', ()=> {
-  // const jingleBells = document.querySelector('.jingle-bells');
-  // const bellSound = new Audio('assets/bells.mp3');
-
-  // jingleBells.addEventListener("click", () => {
-  //   if (!jingleBells.classList.contains('playing')) {
-  //     jingleBells.classList.add('playing');
-  //     bellSound.currentTime = 1;
-  //     bellSound.play();
-  //   } else {
-  //     jingleBells.classList.remove('playing');
-  //     bellSound.pause();
-  //   }
-  // });
-
   const button = document.querySelector('#button');
   button.addEventListener("click", () => {
     button.classList.add('hidden');
   })
-
 });
 // const createSnow = (container) => {
 //   const snowEl = document.createElement('span');
