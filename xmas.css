@@ -1,0 +1,37 @@
+.snow-container {
+  position: relative;
+  height: 100vh; /* コンテナの高さ */
+  height: -webkit-fill-available;
+  width: 100%; /* コンテナの横幅 */
+  overflow: hidden;
+}
+
+/* ===== 雪のスタイル ===== */
+.snow {
+  /* background-color: #fff; */
+  background-color: yellow;
+  border-radius: 50%;
+  position: absolute;
+  animation: animate-snow 10s linear;
+}
+
+/* ===== 雪のアニメーション ===== */
+@keyframes animate-snow {
+  0% {
+    opacity: 0;
+    top: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    top: 100vh;
+  }
+}
