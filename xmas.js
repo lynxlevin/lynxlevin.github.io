@@ -30,20 +30,24 @@ class Aframe {
 
 
 window.addEventListener('DOMContentLoaded', ()=> {
-  const jingleBells = document.querySelector('.jingle-bells');
-  const bellSound = new Audio('assets/bells.mp3');
+  // const jingleBells = document.querySelector('.jingle-bells');
+  // const bellSound = new Audio('assets/bells.mp3');
 
-  jingleBells.addEventListener("click", () => {
-    if (!jingleBells.classList.contains('playing')) {
-      jingleBells.classList.add('playing');
-      bellSound.currentTime = 1;
-      bellSound.play();
-    } else {
-      jingleBells.classList.remove('playing');
-      bellSound.pause();
-    }
-  });
+  // jingleBells.addEventListener("click", () => {
+  //   if (!jingleBells.classList.contains('playing')) {
+  //     jingleBells.classList.add('playing');
+  //     bellSound.currentTime = 1;
+  //     bellSound.play();
+  //   } else {
+  //     jingleBells.classList.remove('playing');
+  //     bellSound.pause();
+  //   }
+  // });
 
+  const button = document.querySelector('#button');
+  button.addEventListener("click", () => {
+    button.classList.add('hidden');
+  })
 
 });
 const createSnow = (container) => {
