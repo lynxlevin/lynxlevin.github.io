@@ -9,9 +9,27 @@
     <link rel="stylesheet" href="xmas.css">
     <script src="xmas.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      AFRAME.registerComponent('videohandler', {
+          init: function () {
+              var marker = this.el;
+              this.vid = document.querySelector("#vid");
+
+              marker.addEventListener('markerFound', function () {
+                  this.toggle = true;
+                  this.vid.play();
+              }.bind(this));
+
+              marker.addEventListener('markerLost', function () {
+                  this.toggle = false;
+                  this.vid.pause();
+              }.bind(this));
+          },
+      });
+  </script>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <div class="snow-container demo-container">
+    <div class="snow-container">
       <a-scene
         vr-mode-ui="enabled: false;"
         loading-screen="enabled: false;"
@@ -20,23 +38,84 @@
         embedded
         gesture-detector
       >
+        <a-assets>
+          <a-asset-item
+              id="animated-asset1"
+              src="assets/1-1.glb"
+              response-type="arraybuffer"
+          ></a-asset-item>
+          <a-asset-item
+              id="animated-asset2"
+              src="assets/1-2.glb"
+              response-type="arraybuffer"
+          ></a-asset-item>
+          <video
+              id="vid"
+              src="assets/movie.mp4"
+              preload="auto"
+              response-type="arraybuffer"
+              loop
+              crossorigin
+              webkit-playsinline
+              autoplay
+              playsinline
+          ></video>
+        </a-assets>
+
         <a-marker
-          id="animated-marker"
-          type="pattern"
-          preset="custom"
-          url="assets/marker.patt"
-          raycaster="objects: .clickable"
-          emitevents="true"
-          cursor="fuse: false; rayOrigin: mouse;"
-          id="markerA"
+            id="marker1"
+            type="pattern"
+            preset="custom"
+            url="assets/pattern-1.patt"
+            registerevents
         >
-          <a-image
-            src="assets/asset.jpeg"
-            scale="1 1 1"
-            class="clickable"
-            rotation="-90 0 0"
-            gesture-handler
-          ></a-image>
+            <a-entity
+                scale="106.43347211899357 106.43347211899357 106.43347211899357"
+                rotation="270 0 0"
+                animation-mixer="loop: repeat;"
+                position="0 0 0"
+                gltf-model="#animated-asset1"
+            ></a-entity>
+        </a-marker>
+
+        <a-marker
+            id="marker2"
+            type="pattern"
+            preset="custom"
+            url="assets/pattern-2.patt"
+            registerevents
+        >
+            <a-entity
+                scale="106.43347211899357 106.43347211899357 106.43347211899357"
+                rotation="270 0 0"
+                animation-mixer="loop: repeat;"
+                position="0 0 0"
+                gltf-model="#animated-asset2"
+            ></a-entity>
+        </a-marker>
+
+        <a-marker
+            type="pattern"
+            preset="custom"
+            url="assets/pattern-3.patt"
+            videohandler
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance="0.01"
+            smoothThreshold="5"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            id="marker3"
+        >
+          <a-video
+              src="#vid"
+              scale="1 1 1"
+              position="0 0.1 0"
+              rotation="-90 0 0"
+              class="clickable"
+              gesture-handler
+          ></a-video>
         </a-marker>
 
         <a-entity camera></a-entity>

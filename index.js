@@ -14,7 +14,7 @@
       });
 
       const jingleBells = document.querySelector('.jingle-bells');
-      const bellSound = new Audio('bells.mp3');
+      const bellSound = new Audio('assets/bells.mp3');
 
       jingleBells.addEventListener("click", () => {
         if (!jingleBells.classList.contains('playing')) {
