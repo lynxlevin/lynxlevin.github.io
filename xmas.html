@@ -18,10 +18,17 @@
 
           // マーカーを検出したイベントの登録
           marker.addEventListener('markerFound', async function () {
-            console.log(marker.dataset.contentid);
-            setInterval(() => {createSnow(container)}, 100);
-            bellSound.currentTime = 1;
-            bellSound.play();
+            if (marker.id == "marker1") {
+              setInterval(() => {createSnow(container)}, 100);
+            }
+            if (marker.id == "marker2") {
+              setInterval(() => {createSnow(container)}, 100);
+              bellSound.currentTime = 1;
+              bellSound.play();
+            }
+            if (marker.id == "marker3") {
+              window.location.href = "https://lynxlevin.github.io/assets/movie.mp4";
+            }
           });
         }
       });
