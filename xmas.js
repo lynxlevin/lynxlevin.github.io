@@ -1,44 +1,44 @@
-class Aframe {
-  constructor() {
-      this.register();
-  }
+// class Aframe {
+//   constructor() {
+//       this.register();
+//   }
 
-  register() {
-    //マーカーの前に読み込まないと動かない
-    AFRAME.registerComponent('registerevents', {
-      init: function () {
-        const marker = this.el;
-        const container = document.querySelector('.snow-container');
+//   register() {
+//     //マーカーの前に読み込まないと動かない
+//     AFRAME.registerComponent('registerevents', {
+//       init: function () {
+//         const marker = this.el;
+//         const container = document.querySelector('.snow-container');
 
-        // マーカーを検出したイベントの登録
-        marker.addEventListener('markerFound', async function () {
-          console.log(marker.dataset.contentid);
-          setInterval(() => {createSnow(container)}, 100);
-        });
+//         // マーカーを検出したイベントの登録
+//         marker.addEventListener('markerFound', async function () {
+//           console.log(marker.dataset.contentid);
+//           setInterval(() => {createSnow(container)}, 100);
+//         });
 
-        // マーカーを見失ったイベントの登録
-        marker.addEventListener('markerLost', async function () {
-        });
-      }
-    });
-    // AFRAME.registerComponent('videohandler', {
-    //     init: function () {
-    //         var marker = this.el;
-    //         this.vid = document.querySelector("#vid");
+//         // マーカーを見失ったイベントの登録
+//         marker.addEventListener('markerLost', async function () {
+//         });
+//       }
+//     });
+//     // AFRAME.registerComponent('videohandler', {
+//     //     init: function () {
+//     //         var marker = this.el;
+//     //         this.vid = document.querySelector("#vid");
 
-    //         marker.addEventListener('markerFound', function () {
-    //             this.toggle = true;
-    //             this.vid.play();
-    //         }.bind(this));
+//     //         marker.addEventListener('markerFound', function () {
+//     //             this.toggle = true;
+//     //             this.vid.play();
+//     //         }.bind(this));
 
-    //         marker.addEventListener('markerLost', function () {
-    //             this.toggle = false;
-    //             this.vid.pause();
-    //         }.bind(this));
-    //     },
-    // });
-  }
-}
+//     //         marker.addEventListener('markerLost', function () {
+//     //             this.toggle = false;
+//     //             this.vid.pause();
+//     //         }.bind(this));
+//     //     },
+//     // });
+//   }
+// }
 
 
 
@@ -66,19 +66,19 @@ window.addEventListener('DOMContentLoaded', ()=> {
   })
 
 });
-const createSnow = (container) => {
-  const snowEl = document.createElement('span');
-  snowEl.className = 'snow';
-  const minSize = 5;
-  const maxSize = 10;
-  const size = Math.random() * (maxSize - minSize) + minSize;
-  snowEl.style.width = `${size}px`;
-  snowEl.style.height = `${size}px`;
-  snowEl.style.left = Math.random() * 100 + '%';
-  container.appendChild(snowEl);
+// const createSnow = (container) => {
+//   const snowEl = document.createElement('span');
+//   snowEl.className = 'snow';
+//   const minSize = 5;
+//   const maxSize = 10;
+//   const size = Math.random() * (maxSize - minSize) + minSize;
+//   snowEl.style.width = `${size}px`;
+//   snowEl.style.height = `${size}px`;
+//   snowEl.style.left = Math.random() * 100 + '%';
+//   container.appendChild(snowEl);
 
-  // 一定時間が経てば雪を消す
-  setTimeout(() => {
-    snowEl.remove();
-  }, 10000);
-}
+//   // 一定時間が経てば雪を消す
+//   setTimeout(() => {
+//     snowEl.remove();
+//   }, 10000);
+// }
