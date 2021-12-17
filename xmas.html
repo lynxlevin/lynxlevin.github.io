@@ -16,65 +16,64 @@
       <a-scene
         vr-mode-ui="enabled: false;"
         loading-screen="enabled: false;"
-        arjs="sourceType: webcam; debugUIEnabled: false;"
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
         id="scene"
         embedded
         gesture-detector
       >
-        <a-assets>
-          <a-asset-item
-              id="animated-asset1"
-              src="assets/1-1.glb"
-              response-type="arraybuffer"
-          ></a-asset-item>
-          <a-asset-item
-              id="animated-asset2"
-              src="assets/1-2.glb"
-              response-type="arraybuffer"
-          ></a-asset-item>
-          <!-- <video
-              id="vid"
-              src="assets/movie.mp4"
-              preload="auto"
-              response-type="arraybuffer"
-              loop
-              crossorigin
-              webkit-playsinline
-              autoplay
-              playsinline
-          ></video> -->
-        </a-assets>
-
         <a-marker
-            id="marker1"
-            type="pattern"
-            preset="custom"
-            url="assets/pattern-1.patt"
-            registerevents
+          id="marker1"
+          type="pattern"
+          preset="custom"
+          url="assets/marker.patt"
+          raycaster="objects: .clickable"
+          emitevents="true"
+          cursor="fuse: false; rayOrigin: mouse;"
         >
-            <a-entity
-                scale="1 1 1"
-                rotation="270 0 0"
-                animation-mixer="loop: repeat;"
-                position="0 0 0"
-                gltf-model="#animated-asset1"
-            ></a-entity>
+          <a-image
+            src="assets/asset.png"
+            scale="1 1 1"
+            class="clickable"
+            rotation="-90 0 0"
+            gesture-handler
+          ></a-image>
         </a-marker>
 
         <a-marker
             id="marker2"
             type="pattern"
             preset="custom"
-            url="assets/pattern-2.patt"
+            url="assets/marker.patt"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+        >
+          <a-image
+            src="assets/asset.png"
+            scale="1 1 1"
+            class="clickable"
+            rotation="-90 0 0"
+            gesture-handler
+          ></a-image>
+        </a-marker>
+
+        <a-marker
+            id="marker3"
+            type="pattern"
+            preset="custom"
+            url="assets/marker.patt"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
             registerevents
         >
-            <a-entity
-                scale="1 1 1"
-                rotation="270 0 0"
-                animation-mixer="loop: repeat;"
-                position="0 0 0"
-                gltf-model="#animated-asset2"
-            ></a-entity>
+          <a-image
+            src="assets/asset.png"
+            scale="1 1 1"
+            class="clickable"
+            rotation="-90 0 0"
+            gesture-handler
+          ></a-image>
         </a-marker>
 
         <!-- <a-marker
