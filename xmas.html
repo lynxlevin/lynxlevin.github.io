@@ -9,7 +9,40 @@
     <link rel="stylesheet" href="xmas.css">
     <script src="xmas.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- <script>
+      AFRAME.registerComponent('registerevents', {
+        init: function () {
+          const marker = this.el;
+          const container = document.querySelector('.snow-container');
 
+          // マーカーを検出したイベントの登録
+          marker.addEventListener('markerFound', async function () {
+            console.log(marker.dataset.contentid);
+            setInterval(() => {createSnow(container)}, 100);
+          });
+
+          // マーカーを見失ったイベントの登録
+          marker.addEventListener('markerLost', async function () {
+          });
+        }
+      });
+      const createSnow = (container) => {
+  const snowEl = document.createElement('span');
+  snowEl.className = 'snow';
+  const minSize = 5;
+  const maxSize = 10;
+  const size = Math.random() * (maxSize - minSize) + minSize;
+  snowEl.style.width = `${size}px`;
+  snowEl.style.height = `${size}px`;
+  snowEl.style.left = Math.random() * 100 + '%';
+  container.appendChild(snowEl);
+
+  // 一定時間が経てば雪を消す
+  setTimeout(() => {
+    snowEl.remove();
+  }, 10000);
+}
+    </script> -->
   </head>
   <body style="margin: 0; overflow: hidden;">
     <div class="snow-container">
@@ -23,13 +56,14 @@
         gesture-detector
       >
         <a-marker
-          id="marker1"
+          id="animated-marker"
           type="pattern"
           preset="custom"
           url="assets/marker.patt"
           raycaster="objects: .clickable"
           emitevents="true"
           cursor="fuse: false; rayOrigin: mouse;"
+          id="marker1"
         >
           <a-image
             src="assets/asset.png"
