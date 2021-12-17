@@ -1,4 +1,4 @@
-export default class Aframe {
+class Aframe {
   constructor() {
       this.register();
   }
