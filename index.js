@@ -1,6 +1,14 @@
 
     window.addEventListener('DOMContentLoaded', ()=> {
-      // コンテナを指定
+      // Shutter button
+      const shutter = document.querySelector('.shutter-closed');
+      shutter.addEventListener('click', () => {
+        shutter.classList.remove('shutter-closed');
+        shutter.classList.add('shutter');
+      });
+
+
+      // Let it snow button
       const container = document.querySelector('.snow-container');
       const letItSnow = document.querySelector('.let-it-snow');
       let count = 0;
@@ -13,6 +21,7 @@
         }
       });
 
+      // JingleBells button
       const jingleBells = document.querySelector('.jingle-bells');
       const bellSound = new Audio('assets/bells.mp3');
 
