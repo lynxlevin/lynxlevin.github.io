@@ -77,12 +77,16 @@ body {
   flex-wrap: wrap;
   justify-content: space-around;
 }
+.skill-sheat_items::after {
+  display: block;
+  content: "";
+  width: 250px;
+}
 
-.skill-sheat_sub-section {
+.skill-sheat_sub-section-title {
   width: 230px;
   text-align: center;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem auto;
   color: black;
   line-height: 1.6rem;
 }
