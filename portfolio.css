@@ -1,0 +1,273 @@
+:root {
+  --star-color: #ffdb00;
+  --gray-star-color: #bbbbbb;
+  --main-color: #f4653f;
+  --main-color-hover: #f48d71;
+  --background: #e2e2e2;
+  --text-color: #474747;
+  --text-color-hover: #7e7e7e;
+}
+
+@font-face {
+  font-family: CodeNext-ExtraBold;
+  src: url("assets/CodeNext-ExtraBold.eot");
+  src: url("assets/CodeNext-ExtraBold.woff2") format("woff2"),
+    url("assets/CodeNext-ExtraBold.eot") format("woff");
+}
+
+body {
+  padding-bottom: 3rem;
+  background-color: var(--background);
+}
+
+.main_title {
+  text-align: center;
+  background-color: var(--main-color);
+  padding: 3rem 0;
+  color: white;
+}
+
+.contents_heading {
+  text-align: center;
+  color: white;
+  background-color: #3f4652;
+  line-height: 3.5rem;
+  letter-spacing: 0.2rem;
+}
+
+.content_heading {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: var(--main-color);
+}
+
+.contents {
+  color: var(--text-color);
+  padding: 0 1rem;
+}
+
+.content {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
+    0 0px 0 1px rgba(10, 10, 10, 0.02);
+  padding: 1.7rem 1rem;
+  max-width: 580px;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+
+.sub-content {
+  margin: 1.5rem 0;
+}
+
+.text-block {
+  margin: 0 0.2rem;
+}
+
+.line-title {
+  width: 3rem;
+  display: inline-block;
+}
+
+.skill-sheat_items {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.skill-sheat_sub-section {
+  width: 230px;
+  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: black;
+  line-height: 1.6rem;
+}
+
+.skill-sheat_item {
+  width: 250px;
+  position: relative;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+}
+.skill-sheat_item:hover {
+  color: var(--main-color);
+}
+.skill-sheat_item:hover::before {
+  content: "";
+  width: 17rem;
+  height: 1.4rem;
+  background-color: rgba(255, 255, 255, 1);
+  border: solid 1px gray;
+  border-radius: 20px;
+  position: absolute;
+  top: -2.9rem;
+  left: -1rem;
+  padding: 0.6rem;
+  font-size: 0.97rem;
+  text-align: center;
+  color: black;
+}
+.one.skill-sheat_item:hover::before {
+  content: "コードを解読できる";
+}
+.two.skill-sheat_item:hover::before {
+  content: "他者の助けを借りながら実装できる";
+}
+.three.skill-sheat_item:hover::before {
+  content: "調べながら自分で実装できる";
+}
+.four.skill-sheat_item:hover::before {
+  content: "調べながら他者のサポートもできる";
+}
+.five.skill-sheat_item:hover::before {
+  content: "どんな課題も自力で解決できる";
+}
+
+.skill-sheat_explanation {
+  font-size: 0.9rem;
+  width: 310px;
+  position: relative;
+  line-height: 1.6rem;
+}
+
+.skill-sheat_experience {
+  margin-left: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.application-title {
+  margin-bottom: 0.5rem;
+  color: var(--main-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: block;
+}
+
+.external-link::after {
+  font-family: "Font Awesome 5 Free";
+  font-size: 0.7rem;
+  content: " \f35d";
+}
+
+.external-link:hover {
+  color: var(--main-color-hover);
+}
+
+.github-link {
+  font-size: 1.8rem;
+  color: var(--text-color);
+  text-decoration: none;
+  position: absolute;
+  top: 4;
+  right: 4;
+  padding: 1rem;
+}
+.github-link:hover {
+  color: var(--text-color-hover);
+  font-size: 1.7rem;
+}
+
+.disc-list {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+}
+
+.list-title {
+  /* font-size: 1.2rem; */
+  margin-left: -0.4rem;
+}
+
+.contacts {
+  display: flex;
+  justify-content: space-around;
+}
+
+.contact {
+  font-size: 2rem;
+  color: var(--text-color);
+  text-decoration: none;
+  display: block;
+}
+.contact:hover {
+  color: var(--text-color-hover);
+  font-size: 1.9rem;
+}
+
+.star {
+  font-size: 1rem;
+  position: absolute;
+  right: 0;
+  text-shadow: 0px 0px 1px black;
+}
+.five .star::before {
+  content: "★★★★★";
+  color: var(--star-color);
+}
+.four .star::before {
+  content: "★★★★";
+  color: var(--star-color);
+}
+.four .star::after {
+  content: "★";
+  color: var(--gray-star-color);
+}
+.three .star::before {
+  content: "★★★";
+  color: var(--star-color);
+}
+.three .star::after {
+  content: "★★";
+  color: var(--gray-star-color);
+}
+.two .star::before {
+  content: "★★";
+  color: var(--star-color);
+}
+.two .star::after {
+  content: "★★★";
+  color: var(--gray-star-color);
+}
+.one .star::before {
+  content: "★";
+  color: var(--star-color);
+}
+.one .star::after {
+  content: "★★★★";
+  color: var(--gray-star-color);
+}
+
+h1 {
+  display: block;
+  font-size: 2.6rem;
+  /* margin-block-start: 0.67rem; */
+  /* margin-block-end: 0.67rem; */
+  /* margin-inline-start: 0px; */
+  /* margin-inline-end: 0px; */
+  /* font-weight: bold; */
+  font-family: CodeNext-ExtraBold;
+  letter-spacing: 0.2rem;
+}
+
+h2 {
+  display: block;
+  font-size: 1.3rem;
+  /* margin-block-start: 0.83rem; */
+  margin-block-end: 0.83rem;
+  /* margin-inline-start: 0px;
+  margin-inline-end: 0px; */
+  font-weight: bold;
+}
+
+h3 {
+  display: block;
+  font-size: 1.17rem;
+  margin-block-start: -0.4em;
+  margin-block-end: 1em;
+  /* margin-inline-start: 0px; */
+  /* margin-inline-end: 0px; */
+  font-weight: bold;
+}
