@@ -199,6 +199,16 @@ body {
 .contact:hover {
   color: var(--text-color-hover);
   font-size: 1.9rem;
+  padding: 0 4px;
+}
+
+.qiita-link {
+  display: block;
+  height: 36px;
+}
+.qiita-link:hover {
+  height: 34px;
+  padding: 1px 2px 1px 3px;
 }
 
 .star {
