@@ -18,16 +18,17 @@
 body {
   padding-bottom: 3rem;
   background-color: var(--background);
+  color: var(--text-color);
 }
 
-.main_title {
+.main-title {
   text-align: center;
   background-color: var(--main-color);
   padding: 3rem 0;
   color: white;
 }
 
-.contents_heading {
+.contents-heading {
   text-align: center;
   color: white;
   background-color: #3f4652;
@@ -35,14 +36,16 @@ body {
   letter-spacing: 0.2rem;
 }
 
-.content_heading {
+.content-heading {
   margin-bottom: 0.5rem;
   text-align: center;
   color: var(--main-color);
 }
+.content-heading.dark {
+  color: var(--text-color);
+}
 
 .contents {
-  color: var(--text-color);
   padding: 0 1rem;
 }
 
@@ -53,16 +56,15 @@ body {
     0 0px 0 1px rgba(10, 10, 10, 0.02);
   padding: 1.7rem 1rem;
   max-width: 580px;
-  margin: 0 auto 1rem;
+  margin: 0 auto 2.5rem;
   position: relative;
+}
+.content:first-child {
+  margin-top: 2.5rem;
 }
 
 .sub-content {
   margin: 1.5rem 0;
-}
-
-.text-block {
-  margin: 0 0.2rem;
 }
 
 .line-title {
@@ -72,7 +74,6 @@ body {
 
 .skill-sheat_items {
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -81,6 +82,13 @@ body {
   display: block;
   content: "";
   width: 250px;
+}
+
+.skill-sheat_explanations {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .skill-sheat_sub-section-title {
@@ -95,7 +103,7 @@ body {
   width: 250px;
   position: relative;
   font-size: 1.2rem;
-  line-height: 1.6rem;
+  line-height: 2rem;
 }
 .skill-sheat_item:hover {
   color: var(--main-color);
@@ -103,7 +111,6 @@ body {
 .skill-sheat_item:hover::before {
   content: "";
   width: 17rem;
-  height: 1.4rem;
   background-color: rgba(255, 255, 255, 1);
   border: solid 1px gray;
   border-radius: 20px;
@@ -112,6 +119,7 @@ body {
   left: -1rem;
   padding: 0.6rem;
   font-size: 0.97rem;
+  line-height: 1.3rem;
   text-align: center;
   color: black;
 }
@@ -138,17 +146,24 @@ body {
   line-height: 1.6rem;
 }
 
-.skill-sheat_experience {
-  margin-left: 0.3rem;
-  font-size: 0.8rem;
-}
-
 .application-title {
   margin-bottom: 0.5rem;
   color: var(--main-color);
   font-size: 1.5rem;
   font-weight: bold;
   display: block;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.application-image {
+  max-width: 80%;
+  max-height: 200px;
+}
+a .application-image:hover {
+  opacity: 0.6;
 }
 
 .external-link::after {
@@ -177,12 +192,17 @@ body {
 
 .disc-list {
   list-style-type: disc;
-  margin-left: 1.5rem;
+  margin-left: 1.3rem;
 }
 
 .list-title {
-  /* font-size: 1.2rem; */
   margin-left: -0.4rem;
+}
+.list-title:before {
+  content: "【";
+}
+.list-title:after {
+  content: "】";
 }
 
 .contacts {
@@ -257,11 +277,6 @@ body {
 h1 {
   display: block;
   font-size: 2.6rem;
-  /* margin-block-start: 0.67rem; */
-  /* margin-block-end: 0.67rem; */
-  /* margin-inline-start: 0px; */
-  /* margin-inline-end: 0px; */
-  /* font-weight: bold; */
   font-family: CodeNext-ExtraBold;
   letter-spacing: 0.2rem;
 }
@@ -269,10 +284,6 @@ h1 {
 h2 {
   display: block;
   font-size: 1.3rem;
-  /* margin-block-start: 0.83rem; */
-  margin-block-end: 0.83rem;
-  /* margin-inline-start: 0px;
-  margin-inline-end: 0px; */
   font-weight: bold;
 }
 
@@ -281,7 +292,5 @@ h3 {
   font-size: 1.17rem;
   margin-block-start: -0.4em;
   margin-block-end: 1em;
-  /* margin-inline-start: 0px; */
-  /* margin-inline-end: 0px; */
   font-weight: bold;
 }
