@@ -197,6 +197,7 @@ a .application-image:hover {
 
 .list-title {
   margin-left: -0.4rem;
+  margin-bottom: 0.4rem;
 }
 .list-title:before {
   content: "【";
