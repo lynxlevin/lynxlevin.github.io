@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>母の日チケット</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <link rel="stylesheet" media="all" href="reset.css">
+        <link rel="stylesheet" media="all" href="portfolio.css">
+        <style>
+            body {
+                background: rgba(0, 0, 0, 0.03);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 5vh 5vw;
+            }
+            button {
+                height: 10vh;
+                width: 60vw;
+                font-size: 1.6rem;
+                border-radius: 5px;
+                border: 3px dotted black;
+                background-color: #fff20a;
+            }
+            h1 {
+                margin-bottom: 1.2rem;
+            }
+            .ticket-wrapper {
+                position: relative;
+            }
+            .ticket-image {
+                height: 270px;
+            }
+            .used-stamp {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                transition: 1.7s opacity;
+                height: 100%;
+            }
+            .hidden {
+                opacity: 0;
+            }
+            .text-wrapper {
+                text-align: center;
+                margin: 3vh 2vw;
+                border: 3px dotted black;
+                padding: 1em 3vw 0;
+                background: rgba(180, 250, 230, 0.6);
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+
+    <body ontouchstart="">
+        <h1>母の日チケット</h1>
+        <div class="ticket-wrapper">
+            <img src="assets/llgameland.jpg" alt="" class="ticket-image">
+            <img src="assets/mark_sumi_checked.png" alt="" class="used-stamp hidden" id="used-stamp">
+        </div>
+        <!-- TODO: お礼を書く -->
+        <div class="text-wrapper">
+            <h3>お礼を書く</h3>
+            <h3>このチケットを使うことで、昌弘に2時間の軽作業を頼むことができます。</h3>
+        </div>
+        <button id="use-button">使用済みにする</button>
+        <button id="test"></button>
+    </body>
+    <script>
+        window.addEventListener('load', () => {
+            const isUsed = localStorage.getItem('mothers-day-ticket-used') !== null;
+            if (isUsed) {
+                document.querySelector('#used-stamp').classList.remove('hidden');
+            }
+
+            document.querySelector('#use-button').addEventListener('click', () => {
+                document.querySelector('#used-stamp').classList.remove('hidden');
+                const date = new Date();
+                localStorage.setItem('mothers-day-ticket-used', date);
+            });
+
+            document.querySelector('#test').addEventListener('click', () => {
+                document.querySelector('#used-stamp').classList.add('hidden');
+                localStorage.removeItem('mothers-day-ticket-used');
+                console.log('remove');
+            })
+        });
+    </script>
+</html>
