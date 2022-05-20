@@ -159,12 +159,6 @@
                     input.value = input.value + 'i';
                     if (input.value.length === 3) {
                         signals.classList.remove('hidden');
-                        window.addEventListener('click', e => {
-                            if (e.target.dataset.secret) {
-                                input.value = input.value + e.target.dataset.secret;
-                            }
-                            evalInput();
-                        });
                         window.addEventListener('touchend', e => {
                             if (e.target.dataset.secret) {
                                 input.value = input.value + e.target.dataset.secret;
@@ -174,7 +168,6 @@
                     }
                 }
             }
-            document.querySelector('#use-button').addEventListener('click', useButtonFunction);
             document.querySelector('#use-button').addEventListener('touchend', useButtonFunction);
         });
     </script>
