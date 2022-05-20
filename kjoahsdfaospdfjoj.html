@@ -9,7 +9,7 @@
         <link rel="stylesheet" media="all" href="portfolio.css">
         <style>
             body {
-                background: rgba(0, 0, 0, 0.03);
+                background: rgba(170, 250, 0, 0.09);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -22,6 +22,7 @@
                 border-radius: 5px;
                 border: 3px dotted black;
                 background-color: #fff20a;
+                color: black;
             }
             h1 {
                 margin-bottom: 1.2rem;
@@ -51,41 +52,119 @@
                 background: rgba(180, 250, 230, 0.6);
                 border-radius: 5px;
             }
+            .signals {
+                color: white;
+                text-align: center;
+                position: fixed;
+                top: 0;
+                right: 0;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0.15);
+                font-size: 26px;
+            }
+            .green {
+                color: rgb(50, 200, 80);
+            }
+            .red {
+                color: red;
+            }
+            .flash {
+                animation: flash 0.3s linear 0s 3;
+            }
+            @keyframes flash {
+                0%,100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
         </style>
     </head>
 
     <body ontouchstart="">
-        <h1>母の日チケット</h1>
+        <h1 data-secret="a">母の日チケット</h1>
         <div class="ticket-wrapper">
-            <img src="assets/llgameland.jpg" alt="" class="ticket-image">
-            <img src="assets/mark_sumi_checked.png" alt="" class="used-stamp hidden" id="used-stamp">
+            <img src="assets/mothers_ticket.jpg" alt="" class="ticket-image">
+            <img src="assets/mark_sumi_checked.png" alt="" class="used-stamp hidden" id="used-stamp" data-secret="b">
         </div>
-        <!-- TODO: お礼を書く -->
         <div class="text-wrapper">
-            <h3>お礼を書く</h3>
-            <h3>このチケットを使うことで、昌弘に2時間の軽作業を頼むことができます。</h3>
+            <h3 data-secret="c">このチケットを使うことで、昌弘に2時間の軽作業を頼むことができます。</h3>
         </div>
         <button id="use-button">使用済みにする</button>
-        <button id="test"></button>
+        <input type="hidden" id="hidden-input">
+        <div class="signals hidden">
+            <span id="span1" data-secret="d">●</span>
+            <span id="span2">●</span>
+            <span id="span3">●</span>
+        </div>
     </body>
     <script>
         window.addEventListener('load', () => {
-            const isUsed = localStorage.getItem('mothers-day-ticket-used') !== null;
+            const usedStamp = document.querySelector('#used-stamp');
+            const input = document.querySelector('#hidden-input');
+            const signals = document.querySelector('.signals');
+            const span1 = document.querySelector('#span1');
+            const span2 = document.querySelector('#span2');
+            const span3 = document.querySelector('#span3');
+            const answer = 'iiidab';
+
+            let isUsed = localStorage.getItem('mothers-day-ticket-used') !== null;
             if (isUsed) {
-                document.querySelector('#used-stamp').classList.remove('hidden');
+                usedStamp.classList.remove('hidden');
+            }
+
+            const evalInput = () => {
+                if (input.value.length === 4) span1.classList.add('green');
+                if (input.value.length === 5) span2.classList.add('green');
+                if (input.value.length === 6) {
+                    span3.classList.add('green');
+                    if (input.value === answer) {
+                        signals.classList.add('flash');
+                        usedStamp.classList.add('hidden');
+                        span1.classList.remove('green');
+                        span2.classList.remove('green');
+                        span3.classList.remove('green');
+                        localStorage.removeItem('mothers-day-ticket-used');
+                        localStorage.setItem('secret-found', true);
+                        isUsed = false;
+                        setTimeout(() => {
+                            signals.classList.remove('flash');
+                            signals.classList.add('hidden');
+                            input.value = '';
+                        }, 1500);
+                    } else {
+                        span1.classList.remove('green');
+                        span2.classList.remove('green');
+                        span3.classList.remove('green');
+                        signals.classList.add('red', 'flash');
+                        setTimeout(() => {
+                            signals.classList.remove('red', 'flash');
+                            input.value = 'iii';
+                        }, 1500);
+                    }
+                }
             }
 
             document.querySelector('#use-button').addEventListener('click', () => {
-                document.querySelector('#used-stamp').classList.remove('hidden');
-                const date = new Date();
-                localStorage.setItem('mothers-day-ticket-used', date);
+                if (!isUsed) {
+                    usedStamp.classList.remove('hidden');
+                    const date = new Date();
+                    localStorage.setItem('mothers-day-ticket-used', date);
+                    isUsed = true;
+                } else if (localStorage.getItem('secret-found') === null) {
+                    input.value = input.value + 'i';
+                    if (input.value.length === 3) {
+                        signals.classList.remove('hidden');
+                        window.addEventListener('click', e => {
+                            if (e.target.dataset.secret) {
+                                input.value = input.value + e.target.dataset.secret;
+                            }
+                            evalInput();
+                        });
+                    }
+                }
             });
-
-            document.querySelector('#test').addEventListener('click', () => {
-                document.querySelector('#used-stamp').classList.add('hidden');
-                localStorage.removeItem('mothers-day-ticket-used');
-                console.log('remove');
-            })
         });
     </script>
 </html>
