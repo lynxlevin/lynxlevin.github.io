@@ -149,7 +149,7 @@
                 }
             }
 
-            document.querySelector('#use-button').addEventListener('click', () => {
+            document.querySelector('#use-button').addEventListener('click touchend', () => {
                 if (!isUsed) {
                     usedStamp.classList.remove('hidden');
                     const date = new Date();
@@ -159,7 +159,7 @@
                     input.value = input.value + 'i';
                     if (input.value.length === 3) {
                         signals.classList.remove('hidden');
-                        window.addEventListener('click', e => {
+                        window.addEventListener('click touchend', e => {
                             if (e.target.dataset.secret) {
                                 input.value = input.value + e.target.dataset.secret;
                             }
