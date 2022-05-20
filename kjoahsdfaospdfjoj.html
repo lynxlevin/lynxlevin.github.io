@@ -111,6 +111,7 @@
             const span2 = document.querySelector('#span2');
             const span3 = document.querySelector('#span3');
             const answer = 'iiidab';
+            let playCount = 0;
 
             let isUsed = localStorage.getItem('mothers-day-ticket-used') !== null;
             if (isUsed) {
@@ -124,17 +125,20 @@
                     span3.classList.add('green');
                     if (input.value === answer) {
                         signals.classList.add('flash');
-                        usedStamp.classList.add('hidden');
+                        if (localStorage.getItem('secret-found') === null) usedStamp.classList.add('hidden');
                         span1.classList.remove('green');
                         span2.classList.remove('green');
                         span3.classList.remove('green');
-                        localStorage.removeItem('mothers-day-ticket-used');
-                        localStorage.setItem('secret-found', true);
                         isUsed = false;
                         setTimeout(() => {
                             signals.classList.remove('flash');
-                            signals.classList.add('hidden');
-                            input.value = '';
+                            input.value = 'iii';
+                            if (localStorage.getItem('secret-found') === null) {
+                                localStorage.removeItem('mothers-day-ticket-used');
+                                signals.classList.add('hidden');
+                                input.value = '';
+                            }
+                            localStorage.setItem('secret-found', true);
                         }, 1500);
                     } else {
                         span1.classList.remove('green');
@@ -155,16 +159,19 @@
                     const date = new Date();
                     localStorage.setItem('mothers-day-ticket-used', date);
                     isUsed = true;
-                } else if (localStorage.getItem('secret-found') === null) {
+                } else {
                     input.value = input.value + 'i';
                     if (input.value.length === 3) {
                         signals.classList.remove('hidden');
-                        window.addEventListener('touchend', e => {
-                            if (e.target.dataset.secret) {
-                                input.value = input.value + e.target.dataset.secret;
-                            }
-                            evalInput();
-                        });
+                        if (playCount === 0) {
+                            window.addEventListener('touchend', e => {
+                                if (e.target.dataset.secret) {
+                                    input.value = input.value + e.target.dataset.secret;
+                                }
+                                evalInput();
+                            });
+                            playCount = 1;
+                        }
                     }
                 }
             }
