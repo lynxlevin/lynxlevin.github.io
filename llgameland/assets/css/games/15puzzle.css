@@ -1,0 +1,11 @@
+.tile {
+  border: 1px solid blue;
+  border-radius: 10px;
+  text-align: center;
+  background-color: white;
+  box-shadow: #8f8f8f 2px 2px;
+}
+
+#inputs-wrapper {
+  height: 65px;
+}

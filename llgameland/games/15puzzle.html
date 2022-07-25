@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>15 Puzzle -llGameLand-</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <link rel="stylesheet" media="all" href="../assets/css/reset.css">
+        <link rel="stylesheet" media="all" href="../assets/css/application.css">
+        <link rel="stylesheet" media="all" href="../assets/css/header.css">
+        <link rel="stylesheet" media="all" href="../assets/css/games/common.css">
+        <link rel="stylesheet" media="all" href="../assets/css/games/15puzzle.css">
+        <script src="../assets/javascript/games/15puzzle.js"></script>
+    </head>
+    <body ontouchstart="">
+        <header>
+            <div class="header-left">
+                <a href="/index.html">TOP</a>＞15 Puzzle
+            </div>
+            <div class="header-right">
+            </div>
+        </header>
+        <div id="game-wrapper">
+            <div id="left-wrapper">
+                <div id="top-btn-wrapper">
+                    <button id="restart-game">RESTART</button>
+                    <p id="timer">00:00:00</p>
+                </div>
+                <span id="show-settings">設定を表示する</span>
+                <input type="checkbox" name="checkbox" id="show-settings-check">
+                <div id="inputs-wrapper">
+                    <div id="select-boxes-wrapper">
+                        <div class="select" id="select1-div">
+                            <select id="select1" class="select-tag">
+                                <!-- MYMEMO: jsで生成 -->
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4" selected>4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                                <option value="25">25</option>
+                                <option value="26">26</option>
+                                <option value="27">27</option>
+                                <option value="28">28</option>
+                                <option value="29">29</option>
+                                <option value="30">30</option>
+                                <option value="31">31</option>
+                                <option value="32">32</option>
+                                <option value="33">33</option>
+                                <option value="34">34</option>
+                                <option value="35">35</option>
+                                <option value="36">36</option>
+                                <option value="37">37</option>
+                                <option value="38">38</option>
+                                <option value="39">39</option>
+                                <option value="40">40</option>
+                                <option value="41">41</option>
+                                <option value="42">42</option>
+                                <option value="43">43</option>
+                                <option value="44">44</option>
+                                <option value="45">45</option>
+                                <option value="46">46</option>
+                                <option value="47">47</option>
+                                <option value="48">48</option>
+                                <option value="49">49</option>
+                                <option value="50">50</option>
+                            </select>
+                            <p id="select1-message" class="select-message">※マス目の数を指定（○×○マス）</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="game-info-wrapper">
+                    <h3 id="info1"></h3>
+                    <h3 id="info2"></h3>
+                </div>
+            </div>
+            <div id="center-wrapper">
+                <div class="board-div">
+                    <table id="board"></table>
+                </div>
+                <p id="clear-message"></p>
+            </div>
+        </div>
+    </body>
+</html>

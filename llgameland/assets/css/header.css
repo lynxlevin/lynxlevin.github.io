@@ -1,0 +1,30 @@
+@media screen and (max-width:767px) {
+  header {
+    font-size: 4vmin;
+  }
+}
+
+@media screen and (min-width:768px) {
+  header {
+    font-size: 22px;
+  }
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8vmin 1vmin;
+  border-bottom: solid 1px #0107422a;
+  background-color: #e0d7ca;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  width: 50%;
+}
+
+.header-content {
+  display: block;
+  padding: 0px 5px;
+}

@@ -1,0 +1,60 @@
+.tile-closed {
+  background-color: #c49e90;
+	text-indent:200%;
+	white-space:nowrap;
+  overflow:hidden;
+  font-size: 0px;
+}
+
+.tile-open {
+  background-color: #c8785b;
+  text-align: center;
+}
+
+.tile-broken {
+  background-color: #db4343;
+  background-image: url("../../images/games/minesweeper/acorn_trans.png");
+  background-size: 100%;
+  background-position: center;
+  text-indent:200%;
+	white-space:nowrap;
+  overflow:hidden;
+  font-size: 0px;
+}
+
+.acorn-mark {
+  background-image: url("../../images/games/minesweeper/acorn_trans.png");
+  background-size: 100%;
+  background-position: center;
+  background-color: #c49e90;
+  text-indent:200%;
+  white-space:nowrap;
+  overflow:hidden;
+  font-size: 0px;
+}
+
+.minesweeper-board {
+  border-spacing: 1px;
+}
+
+.minesweeper-board-clear {
+  border-spacing: 1px;
+  opacity: 60%;
+}
+
+.plow-btn {
+  background-image: url("../../images/games/minesweeper/scopp.gif");
+  background-size: cover;
+}
+
+.acorn-btn {
+  background-image: url("../../images/games/minesweeper/acorn_trans.png");
+  background-size: cover;
+}
+
+.squirrel-happy {
+  background-image: url("../../images/games/minesweeper/squirrel_happy.gif");
+  background-size: cover;
+  height: 30vmin;
+  width: 30vmin;
+}

@@ -1,0 +1,14 @@
+td.cell {
+  background-color: green;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  font-size: 6.8vmin;
+  line-height: 6.8vmin;
+}
+
+#board {
+  background-color: black;
+  width: 70vmin;
+  height: 70vmin;
+}
