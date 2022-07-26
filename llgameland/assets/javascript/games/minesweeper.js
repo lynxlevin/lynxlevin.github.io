@@ -11,8 +11,24 @@ window.addEventListener("load", () => {
   doms.restartBtn.onclick = restartGame;
 
   function initializeGame() {
+    prepareSelectBoxes();
     activateEventListeners();
     changeDifficulty(config.difficulty.easy);
+
+    function prepareSelectBoxes() {
+      for (let i = 1; i <= 50; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerText = i;
+        doms.select1.append(option);
+      }
+      for (let i = 1; i <= 1000; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerText = i;
+        doms.select2.append(option);
+      }
+    }
 
     function activateEventListeners() {
       doms.helperBtn.addEventListener("click", firstStep);

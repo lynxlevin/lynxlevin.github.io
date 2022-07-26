@@ -3,7 +3,7 @@ window.addEventListener("load", () => {
   const gameRestartBtn = document.getElementById("restart-game");
   const board = document.getElementById("board");
   let gameTimer;
-  // prepareGame();
+  prepareGame();
   startGame();
   gameRestartBtn.onclick = startGame;
 
@@ -93,9 +93,16 @@ window.addEventListener("load", () => {
       }
     }
   }
-  // function prepareGame() {
-  //   // document.getElementById("select1").value = 4;
-  // }
+  function prepareGame() {
+    const selectBox = document.getElementById("select1");
+    for (let i = 1; i <= 50; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.innerText = i;
+      if (i === 4) option.selected = true;
+      selectBox.append(option);
+    }
+  }
 });
 
 // utils
