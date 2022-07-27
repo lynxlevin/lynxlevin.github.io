@@ -11,6 +11,8 @@ class Reversi {
     constructor() {
         this.board;
         this.cpu;
+
+        // MYMEMO: 表示を管理するクラスを作りたい
         this.doms = {
             // select1: document.getElementById("select1"),
             blackInfo: document.getElementById("black_info"),
@@ -19,6 +21,7 @@ class Reversi {
             clearMessage: document.getElementById("clear-message"),
         };
 
+        // MYMEMO: boardと二重で保持しているのをどうにかしたい
         this.black = 1;
         this.white = 2;
 
@@ -53,32 +56,32 @@ class Reversi {
         if (!self.userTurn) {
             setTimeout(function() {
                 const target = self.cpu.think(self.board);
-                self.flipStones(target.i, target.j, target.color, self);
+                self.flipStones(target.i, target.j, target.color);
                 self.endTurn();
             }, 750);
         }
     }
 
-    clickCell(e, cls) {
-        if (!cls.userTurn) return;
+    clickCell(e) {
+        if (!this.userTurn) return;
         const id = e.target.id;
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
-        const result = cls.flipStones(i, j, cls.black, cls);
-        if (result) cls.endTurn();
+        const result = this.flipStones(i, j, this.black);
+        if (result) this.endTurn();
     }
 
-    flipStones(i, j, color, cls) {
+    flipStones(i, j, color) {
         if (i < 0 || j < 0) return;
 
         let result = false;
-        const flipped = cls.board.getFlipCells(i, j, color);
+        const flipped = this.board.getFlipCells(i, j, color);
 
         if (flipped.length > 0) {
             for (let k = 0; k < flipped.length; k++) {
-                cls.putStone(flipped[k][0], flipped[k][1], color);
+                this.putStone(flipped[k][0], flipped[k][1], color);
             }
-            cls.putStone(i, j, color);
+            this.putStone(i, j, color);
             result = true;
         }
 
@@ -146,7 +149,7 @@ class Board {
                 td.className = 'cell';
                 td.id = 'cell' + i + j;
                 const self = this;
-                td.onclick = (function(e) {game.clickCell(e, game)});
+                td.onclick = (function(e) {game.clickCell(e)});
                 tr.appendChild(td);
             }
             targetEl.appendChild(tr);
