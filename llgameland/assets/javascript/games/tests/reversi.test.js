@@ -5,6 +5,7 @@
 const Module = require('../reversi.js');
 const Reversi = Module.Reversi;
 const Board = Module.Board;
+const Computer = Module.Computer;
 
 
 test('test_Board.copyCells', () => {

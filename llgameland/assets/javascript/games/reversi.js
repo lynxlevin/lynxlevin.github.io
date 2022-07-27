@@ -10,6 +10,7 @@ window.addEventListener("load", () => {
 class Reversi {
     constructor() {
         this.board;
+        this.cpu;
         this.doms = {
             // select1: document.getElementById("select1"),
             blackInfo: document.getElementById("black_info"),
@@ -18,16 +19,6 @@ class Reversi {
             clearMessage: document.getElementById("clear-message"),
         };
 
-        this.weightData = [
-            [30, -12, 0, -1, -1, 0, -12, 30],
-            [-12, -15, -3, -3, -3, -3, -15, -12],
-            [0, -3, 0, -1, -1, 0, -3, 0],
-            [-1, -3, -1, -1, -1, -1, -3, -1],
-            [-1, -3, -1, -1, -1, -1, -3, -1],
-            [0, -3, 0, -1, -1, 0, -3, 0],
-            [-12, -15, -3, -3, -3, -3, -15, -12],
-            [30, -12, 0, -1, -1, 0, -12, 30],
-        ];
         this.black = 1;
         this.white = 2;
 
@@ -39,6 +30,7 @@ class Reversi {
         this.refreshScreen();
         this.board = new Board();
         this.board.generate(this.doms.board, this);
+        this.cpu = new Computer(this.white);
         this.putStone(3, 3, this.black);
         this.putStone(4, 4, this.black);
         this.putStone(3, 4, this.white);
@@ -60,7 +52,7 @@ class Reversi {
         const self = this;
         if (!self.userTurn) {
             setTimeout(function() {
-                const target = self.think(self);
+                const target = self.cpu.think(self.board);
                 self.flipStones(target.i, target.j, target.color, self);
                 self.endTurn();
             }, 750);
@@ -131,49 +123,6 @@ class Reversi {
     showMessage(message) {
         this.doms.clearMessage.textContent = message;
         // MYMEMO: 本ではここでメッセージクリアのタイムアウト
-    }
-
-    // MYMEMO: class Computer
-    think(cls) {
-        let highScore = -1000;
-        let px = -1;
-        let py = -1;
-
-        for (let x = 0; x < 8; x++) {
-            for (let y = 0; y < 8; y++) {
-                const tmpCells = cls.board.copyCells();
-                const flipped = cls.board.getFlipCells(x, y, cls.white);
-                if (flipped.length > 0) {
-                    for (var i = 0; i < flipped.length; i++) {
-                        const p = flipped[i][0];
-                        const q = flipped[i][1];
-                        tmpCells[p][q] = cls.white;
-                        tmpCells[x][y] = cls.white;
-                    }
-                    const score = cls.calcWeightData(tmpCells);
-                    if (score > highScore) {
-                        highScore = score;
-                        px = x;
-                        py = y;
-                    }
-                }
-            }
-        }
-
-        return ({i: px, j: py, color: cls.white});
-    }
-
-    // MYMEMO: class Computer
-    calcWeightData(tmpCells) {
-        let score = 0;
-        for (let x = 0; x < 8; x++) {
-            for (let y = 0; y < 8; y++) {
-                if (tmpCells[x][y] === this.white) {
-                    score += this.weightData[x][y];
-                }
-            }
-        }
-        return score;
     }
 }
 
@@ -307,7 +256,66 @@ class Board {
     }
 }
 
+class Computer {
+    constructor(color) {
+        this.weightData = [
+            [30, -12, 0, -1, -1, 0, -12, 30],
+            [-12, -15, -3, -3, -3, -3, -15, -12],
+            [0, -3, 0, -1, -1, 0, -3, 0],
+            [-1, -3, -1, -1, -1, -1, -3, -1],
+            [-1, -3, -1, -1, -1, -1, -3, -1],
+            [0, -3, 0, -1, -1, 0, -3, 0],
+            [-12, -15, -3, -3, -3, -3, -15, -12],
+            [30, -12, 0, -1, -1, 0, -12, 30],
+        ];
+
+        this.color = color;
+    }
+
+    think(board) {
+        let highScore = -1000;
+        let px = -1;
+        let py = -1;
+
+        for (let x = 0; x < 8; x++) {
+            for (let y = 0; y < 8; y++) {
+                const tmpCells = board.copyCells();
+                const flipped = board.getFlipCells(x, y, this.color);
+                if (flipped.length > 0) {
+                    for (var i = 0; i < flipped.length; i++) {
+                        const p = flipped[i][0];
+                        const q = flipped[i][1];
+                        tmpCells[p][q] = this.color;
+                        tmpCells[x][y] = this.color;
+                    }
+                    const score = this.calcWeightData(tmpCells);
+                    if (score > highScore) {
+                        highScore = score;
+                        px = x;
+                        py = y;
+                    }
+                }
+            }
+        }
+
+        return ({i: px, j: py, color: this.color});
+    }
+
+    calcWeightData(tmpCells) {
+        let score = 0;
+        for (let x = 0; x < 8; x++) {
+            for (let y = 0; y < 8; y++) {
+                if (tmpCells[x][y] === this.color) {
+                    score += this.weightData[x][y];
+                }
+            }
+        }
+        return score;
+    }
+}
+
 module.exports = {
     Reversi,
     Board,
+    Computer,
 };
