@@ -32,9 +32,7 @@ class Reversi {
 
         this.cells = [];
         // MYMEMO: 先攻、後攻選べるように。そうすると、自分の色を変える方がいいかも
-        this.userTurn = true;
-        this.numBlack = 0;
-        this.numWhite = 0;
+        this.userTurn = false;
     }
 
     initializeGame() {
@@ -57,26 +55,7 @@ class Reversi {
         this.putStone(4, 4, this.black);
         this.putStone(3, 4, this.white);
         this.putStone(4, 3, this.white);
-        this.calcScore();
-        this.judge();
-    }
-
-    clickCell(e, cls) {
-        if (!cls.userTurn) return;
-        const id = e.target.id;
-        const i = parseInt(id.charAt(4));
-        const j = parseInt(id.charAt(5));
-
-        const flipped = cls.getFlipCells(i, j, this.black);
-
-        if (flipped.length > 0) {
-            for (let k = 0; k < flipped.length; k++) {
-                this.putStone(flipped[k][0], flipped[k][1], this.black);
-            }
-            this.putStone(i, j, this.black);
-            this.calcScore();
-            this.judge();
-        }
+        this.endTurn();
     }
 
     refreshBoard() {
@@ -86,6 +65,40 @@ class Reversi {
         }
     }
 
+    endTurn() {
+        const scores = this.calcScore(this.cells);
+        this.updateScoreInfo(scores);
+        this.judge(scores);
+        const self = this;
+        if (!self.userTurn) {
+            setTimeout(function() {self.think(self)}, 750);
+        }
+    }
+
+    clickCell(e, cls) {
+        if (!cls.userTurn) return;
+        const id = e.target.id;
+        const i = parseInt(id.charAt(4));
+        const j = parseInt(id.charAt(5));
+        const result = cls.flipStones(i, j, cls.black, cls);
+        // MYMEMO: flipStonesできなくてもendTurnしてしまう
+        if (result) cls.endTurn();
+    }
+
+    flipStones(i, j, color, cls) {
+        let result = false;
+        const flipped = cls.getFlipCells(i, j, color);
+
+        if (flipped.length > 0) {
+            for (let k = 0; k < flipped.length; k++) {
+                cls.putStone(flipped[k][0], flipped[k][1], color);
+            }
+            cls.putStone(i, j, color);
+            result = true;
+        }
+
+        return result;
+    }
 
     putStone(i, j, color) {
         const cell = document.getElementById("cell" + i + j);
@@ -95,50 +108,51 @@ class Reversi {
         this.cells[i][j] = color;
     }
 
-    calcScore() {
-        this.numBlack = 0;
-        this.numWhite = 0;
+    calcScore(cells) {
+        let scoreBlack = 0;
+        let scoreWhite = 0;
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                switch (this.cells[x][y]) {
+                switch (cells[x][y]) {
                     case this.black:
-                        this.numBlack++;
+                        scoreBlack++;
                         break;
                     case this.white:
-                        this.numWhite++;
+                        scoreWhite++;
                         break;
                 }
             }
         }
-        this.doms.blackInfo.textContent = this.numBlack;
-        this.doms.whiteInfo.textContent = this.numWhite;
+        return {
+            black: scoreBlack,
+            white: scoreWhite,
+        };
     }
 
-    judge() {
+    updateScoreInfo(scores) {
+        this.doms.blackInfo.textContent = scores.black;
+        this.doms.whiteInfo.textContent = scores.white;
+    }
+
+    judge(scores) {
         const canFlipBlack = this.canFlip(this.black);
         const canFlipWhite = this.canFlip(this.white);
 
-        const allCellsFilled = this.numBlack + this.numWhite === 64;
+        const allCellsFilled = scores.black + scores.white === 64;
 
         if (allCellsFilled || !(canFlipBlack || canFlipWhite)) {
             this.showMessage("ゲームセット");
         } else if (!canFlipBlack) {
-            showMessage("黒スキップ");
+            this.showMessage("黒スキップ");
             this.userTurn = false;
         } else if (!canFlipWhite) {
-            showMessage("白スキップ");
+            this.showMessage("白スキップ");
             this.userTurn = true;
         } else {
             this.userTurn = !this.userTurn;
         }
-
-        const cls = this;
-        if (!this.userTurn) {
-            setTimeout(function() {cls.think(cls)}, 750);
-        }
     }
 
-    // MYMEMO: 効率化できるかも
     canFlip(color) {
         let result = false;
 
@@ -184,6 +198,7 @@ class Reversi {
         const xOutOfBound = x < 0 || x > 7;
         const yOutOfBound = y < 0 || y > 7;
         if (xOutOfBound || yOutOfBound) return [];
+
         const sameColor = this.cells[x][y] === color;
         const emptyCell = this.cells[x][y] === this.empty;
         if (sameColor || emptyCell) return [];
@@ -240,16 +255,9 @@ class Reversi {
             }
         }
         if (px >= 0 && py >= 0) {
-            const flipped = cls.getFlipCells(px, py, cls.white);
-            if (flipped.length > 0) {
-                for (let k = 0; k < flipped.length; k++) {
-                    cls.putStone(flipped[k][0], flipped[k][1], cls.white);
-                }
-            }
-            cls.putStone(px, py, cls.white);
+            cls.flipStones(px, py, cls.white, cls);
         }
-        cls.calcScore();
-        cls.judge();
+        cls.endTurn();
     }
 
     copyCells(cells) {
@@ -267,6 +275,17 @@ class Reversi {
             }
         }
         return score;
+    }
+
+    test1() {
+        const result = this.test2(1, 3);
+        this.test2(3, 4);
+        return result;
+    }
+
+    test2(a, b) {
+        const result = a + b;
+        return result;
     }
 }
 
