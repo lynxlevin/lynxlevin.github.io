@@ -1,133 +1,10 @@
 window.addEventListener("load", () => {
     "use strict";
-    const game = new Reversible();
+    const game = new Reversi();
     game.initializeGame();
-
-
-
-    let userTurn = false;
-
-
-
-
-    // function initializeGame() {
-    //   prepareSelectBoxes();
-    //   activateEventListeners();
-
-    // //   function prepareSelectBox() {
-    // //     for (let i = 1; i <= 50; i++) {
-    // //       const option = document.createElement('option');
-    // //       option.value = i;
-    // //       option.innerText = i;
-    // //       doms.select1.append(option);
-    // //     }
-    // //   }
-
-    // //   function activateEventListeners() {
-    // //     doms.helperBtn.addEventListener("click", firstStep);
-    // //     doms.difficulty1.addEventListener("click", () => {
-    // //       changeDifficulty(config.difficulty.easy);
-    // //       restartGame();
-    // //     });
-    // //     doms.difficulty2.addEventListener("click", () => {
-    // //       changeDifficulty(config.difficulty.medium);
-    // //       restartGame();
-    // //     });
-    // //     doms.difficulty3.addEventListener("click", () => {
-    // //       changeDifficulty(config.difficulty.hard);
-    // //       restartGame();
-    // //     });
-    // //     doms.plowBtn.addEventListener("click", plowMode);
-    // //     doms.acornBtn.addEventListener("click", acornMode);
-    // //     document.addEventListener("keydown", changeClickMode);
-    // //     doms.select1.addEventListener("input", () => {
-    // //       doms.inputInfo.textContent = `どんぐり${Math.floor(doms.select1.value * doms.select1.value * difficultyValue)}個で難易度${difficultyName}`;
-    // //     });
-    // //   }
-    // }
-    // function restartGame() {
-    //   resetContents();
-    //   resetBoard();
-    //   const acorns = [];
-    //   buryAcorns();
-    //   countNearbyAcorns();
-
-    //   function resetContents() {
-    //     tiles = [];
-    //     gameInAction = true; // リファクタ removeEventListenerで代替できるか？
-    //     isFirstClick = true;
-    //     clearInterval(gameTimer);
-    //     doms.timer.textContent = `00:00:00`;
-    //     doms.showSettingsCheck.checked = false;
-    //     doms.helperBtn.className = "";
-    //     doms.helperBtnMessage.textContent = "";
-    //     remainingAcorns = doms.select2.value;
-    //     changeRemainingAcorns();
-    //     doms.clearMessage.textContent = "";
-    //     doms.clearImage.className = "hidden squirrel-happy";
-    //   }
-    //   function resetBoard() {
-    //     doms.board.innerHTML = "";
-    //     doms.board.className = "minesweeper-board";
-    //     const sides = Number(doms.select1.value);
-    //     for (let i = 0; i < sides; i++) {
-    //       const tr = document.createElement("tr");
-    //       for (let j = 0; j < sides; j++) {
-    //         const index = i * sides + j;
-    //         const td = document.createElement("td");
-    //         td.className = "tile-closed";
-    //         td.index = index;
-    //         td.id = `tile${index}`;
-    //         td.style.height = `${65 / sides}vmin`;
-    //         td.style.width = `${65 / sides}vmin`;
-    //         td.onclick = click;
-    //         tr.appendChild(td);
-    //         tiles.push(td);
-    //       }
-    //       doms.board.appendChild(tr);
-    //     }
-    //   }
-    // }
-    // function click(e) {
-    //   if (isFirstClick) {
-    //     gameTimer = startTimer(gameTimer);
-    //     isFirstClick = false;
-    //   }
-    //   if (isAcornMode) {
-    //     rightClick(e);
-    //     return null;
-    //   }
-    //   if (!gameInAction) {
-    //     return null;
-    //   }
-    //   const clicked = e.srcElement;
-    //   if (clicked.className == "tile-open" || clicked.className == "acorn-mark") {
-    //     return null;
-    //   } else if (clicked.value == "A") {
-    //     clicked.className = "tile-broken";
-    //     gameOver();
-    //   } else if (clicked.value != null) {
-    //     clicked.className = "tile-open";
-    //     clicked.style.fontSize = `${35 / Number(doms.select1.value)}vmin`;
-    //     judge();
-    //   } else if (clicked.value == null) {
-    //     clicked.className = "tile-open";
-    //     clicked.style.fontSize = `${35 / Number(doms.select1.value)}vmin`;
-    //     clickBlank(clicked);
-    //   }
-    // }
-    // function judge() { // 判定結果だけ返すように変える
-    //   const closedTiles = document.getElementsByClassName("tile-closed");
-    //   if (closedTiles.length == 0 && remainingAcorns == 0) {
-    //     clearInterval(gameTimer);
-    //     doms.clearMessage.textContent = "おめでとう！リスも大喜び";
-    //     doms.clearImage.className = "squirrel-happy";
-    //     doms.board.className = "minesweeper-board-clear";
-    //   }
-    // }
 });
 
-class Reversible {
+class Reversi {
     constructor() {
         this.doms = {
             restartBtn: document.getElementById("restart-game"),
@@ -344,7 +221,7 @@ class Reversible {
 
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                const tmpCells = cls.copyCells();
+                const tmpCells = cls.copyCells(cls.cells);
                 const flipped = cls.getFlipCells(x, y, cls.white);
                 if (flipped.length > 0) {
                     for (var i = 0; i < flipped.length; i++) {
@@ -375,15 +252,8 @@ class Reversible {
         cls.judge();
     }
 
-    copyCells() {
-        const tmpCells = [];
-        // MYMEMO: tmpCells = this.cellsではダメなのか？
-        for (let x = 0; x < 8; x++) {
-            tmpCells[x] = [];
-            for (let y = 0; y < 8; y++) {
-                tmpCells[x][y] = this.cells[x][y];
-            }
-        }
+    copyCells(cells) {
+        const tmpCells = JSON.parse(JSON.stringify(cells));
         return tmpCells;
     }
 
@@ -400,18 +270,4 @@ class Reversible {
     }
 }
 
-  // utils
-//   function startTimer(gameTimer) {
-//     let elapsedTime = 0;
-//     gameTimer = setInterval(() => {
-//       elapsedTime++;
-//       let hour = Math.floor(elapsedTime / 3600);
-//       let minute = Math.floor(elapsedTime / 60);
-//       let second = Math.floor(elapsedTime % 60);
-//       hour = ("0" + hour).slice(-2);
-//       minute = ("0" + minute).slice(-2);
-//       second = ("0" + second).slice(-2);
-//       document.getElementById("timer").textContent = `${hour}:${minute}:${second}`;
-//     }, 1000);
-//     return gameTimer;
-//   }
+module.exports = Reversi;
