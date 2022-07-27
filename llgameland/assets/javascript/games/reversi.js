@@ -2,14 +2,15 @@ window.addEventListener("load", () => {
     "use strict";
     const game = new Reversi();
     game.initializeGame();
+    // MYMEMO: refactor
+    const restartBtn = document.getElementById("restart-game");
+    restartBtn.onclick = (function() {const game = new Reversi(); game.initializeGame();});
 });
 
 class Reversi {
     constructor() {
         this.doms = {
-            restartBtn: document.getElementById("restart-game"),
             // select1: document.getElementById("select1"),
-            // timer: document.getElementById("timer"),
             blackInfo: document.getElementById("black_info"),
             whiteInfo: document.getElementById("white_info"),
             board: document.getElementById("board"),
@@ -81,7 +82,6 @@ class Reversi {
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
         const result = cls.flipStones(i, j, cls.black, cls);
-        // MYMEMO: flipStonesできなくてもendTurnしてしまう
         if (result) cls.endTurn();
     }
 
@@ -141,11 +141,14 @@ class Reversi {
         const allCellsFilled = scores.black + scores.white === 64;
 
         if (allCellsFilled || !(canFlipBlack || canFlipWhite)) {
+            // MYMEMO: 結果をちゃんと表示したい
             this.showMessage("ゲームセット");
         } else if (!canFlipBlack) {
+            // MYMEMO: しばらくしたらメッセージを消したい
             this.showMessage("黒スキップ");
             this.userTurn = false;
         } else if (!canFlipWhite) {
+            // MYMEMO: しばらくしたらメッセージを消したい
             this.showMessage("白スキップ");
             this.userTurn = true;
         } else {
@@ -212,8 +215,9 @@ class Reversi {
 
             const xOutOfBound = x < 0 || x > 7;
             const yOutOfBound = y < 0 || y > 7;
+            if (xOutOfBound || yOutOfBound) return [];
             const emptyCell = this.cells[x][y] === this.empty;
-            if (xOutOfBound || yOutOfBound || emptyCell) return [];
+            if (emptyCell) return [];
 
             const sameColor = this.cells[x][y] === color;
             if (sameColor) {
@@ -275,17 +279,6 @@ class Reversi {
             }
         }
         return score;
-    }
-
-    test1() {
-        const result = this.test2(1, 3);
-        this.test2(3, 4);
-        return result;
-    }
-
-    test2(a, b) {
-        const result = a + b;
-        return result;
     }
 }
 
