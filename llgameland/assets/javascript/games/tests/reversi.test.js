@@ -70,7 +70,7 @@ describe('Reversi.judge', () => {
     test('test_cannot_flip_black', () => {
         const game = new Reversi();
         game.board = new Board();
-        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.black));
+        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.colors.black));
         const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 5, white: 5,};
@@ -83,7 +83,7 @@ describe('Reversi.judge', () => {
     test('test_cannot_flip_white', () => {
         const game = new Reversi();
         game.board = new Board();
-        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.white));
+        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.colors.white));
         const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 5, white: 5,};
@@ -115,7 +115,7 @@ describe('Reversi.flipStones', () => {
         const flipped = [[0, 1], [4, 5]];
         const i = 3;
         const j = 6;
-        const color = game.black;
+        const color = game.colors.black;
         const spyGetFlipCells = jest.spyOn(game.board, "getFlipCells").mockImplementation(() => flipped);
         const spyPutStone = jest.spyOn(game, "putStone").mockImplementation(() => null);
 
@@ -138,7 +138,7 @@ describe('Reversi.flipStones', () => {
         const flipped = [];
         const i = 3;
         const j = 6;
-        const color = game.black;
+        const color = game.colors.black;
         const spyGetFlipCells = jest.spyOn(game.board, "getFlipCells").mockImplementation(() => flipped);
         const spyPutStone = jest.spyOn(game, "putStone").mockImplementation(() => null);
 
@@ -158,7 +158,7 @@ describe('Board.canFlip', () => {
         const board = new Board();
         const flipped = [[0, 1], [4, 5]];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
-        const color = board.black;
+        const color = board.colors.black;
 
         const result = board.canFlip(color);
 
@@ -170,7 +170,7 @@ describe('Board.canFlip', () => {
         const board = new Board();
         const flipped = [];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
-        const color = board.black;
+        const color = board.colors.black;
 
         const result = board.canFlip(color);
 

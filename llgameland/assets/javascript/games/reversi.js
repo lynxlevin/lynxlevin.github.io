@@ -1,10 +1,10 @@
 window.addEventListener("load", () => {
     "use strict";
     const game = new Reversi();
-    game.initializeGame();
+    game.start();
     // MYMEMO: refactor
     const restartBtn = document.getElementById("restart-game");
-    restartBtn.onclick = (function() {const game = new Reversi(); game.initializeGame();});
+    restartBtn.onclick = (function() {game.initialize();});
 });
 
 class Reversi {
@@ -12,40 +12,64 @@ class Reversi {
         this.board;
         this.cpu;
 
+        this.cpuTimer;
+
         // MYMEMO: 表示を管理するクラスを作りたい
         this.doms = {
             // select1: document.getElementById("select1"),
-            blackInfo: document.getElementById("black_info"),
-            whiteInfo: document.getElementById("white_info"),
+            userInfoColor: document.getElementById("player_info_color"),
+            cpuInfoColor: document.getElementById("cpu_info_color"),
+            userInfo: document.getElementById("player_info_num"),
+            cpuInfo: document.getElementById("cpu_info_num"),
             board: document.getElementById("board"),
             clearMessage: document.getElementById("clear-message"),
         };
 
         // MYMEMO: boardと二重で保持しているのをどうにかしたい
-        this.black = 1;
-        this.white = 2;
+        this.colors = {
+            black: 1,
+            white: 2,
+        };
+        // MYMEMO: player class を作るまでの暫定
+        this.userColor = "white";
+        this.cpuColor = "black";
 
         // MYMEMO: 先攻、後攻選べるように。そうすると、自分の色を変える方がいいかも
         this.userTurn = false;
     }
 
-    initializeGame() {
-        this.refreshScreen();
+    start() {
         this.board = new Board();
+        this.cpu = new Computer(this.colors[this.cpuColor]);
+        this.initialize();
+    }
+
+    initialize() {
+        clearTimeout(this.cpuTimer);
+        this.userTurn = false;
+        this.clearScreen();
+        this.doms.userInfoColor.textContent = this.userColor === "black" ? "黒" : "白";
+        this.doms.cpuInfoColor.textContent = this.cpuColor === "black" ? "黒" : "白";
         this.board.generate(this.doms.board, this);
-        this.cpu = new Computer(this.white);
-        this.putStone(3, 3, this.black);
-        this.putStone(4, 4, this.black);
-        this.putStone(3, 4, this.white);
-        this.putStone(4, 3, this.white);
+        this.putInitialStones();
         this.endTurn();
     }
 
-    refreshScreen() {
+    clearScreen() {
         const parent = this.doms.board
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
+        this.doms.userInfo.textContent = "";
+        this.doms.cpuInfo.textContent = "";
+        this.doms.clearMessage.textContent = "";
+    }
+
+    putInitialStones() {
+        this.putStone(3, 3, this.colors.black);
+        this.putStone(4, 4, this.colors.black);
+        this.putStone(3, 4, this.colors.white);
+        this.putStone(4, 3, this.colors.white);
     }
 
     endTurn() {
@@ -54,7 +78,8 @@ class Reversi {
         this.judge(scores);
         const self = this;
         if (!self.userTurn) {
-            setTimeout(function() {
+            // MYMEMO: Computer classに持っていきたい
+            this.cpuTimer = setTimeout(function() {
                 const target = self.cpu.think(self.board);
                 self.flipStones(target.i, target.j, target.color);
                 self.endTurn();
@@ -67,7 +92,7 @@ class Reversi {
         const id = e.target.id;
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
-        const result = this.flipStones(i, j, this.black);
+        const result = this.flipStones(i, j, this.colors[this.userColor]);
         if (result) this.endTurn();
     }
 
@@ -92,18 +117,19 @@ class Reversi {
         const cell = document.getElementById("cell" + i + j);
         // MYMEMO: cssを使うように
         cell.textContent = "●";
-        cell.className = "cell " + (color === this.black ? "black" : "white");
+        // MYMEMO: classList使いたい
+        cell.className = "cell " + (color === this.colors.black ? "black" : "white");
         this.board.putStone(i, j, color);
     }
 
     updateScoreInfo(scores) {
-        this.doms.blackInfo.textContent = scores.black;
-        this.doms.whiteInfo.textContent = scores.white;
+        this.doms.userInfo.textContent = scores[this.userColor];
+        this.doms.cpuInfo.textContent = scores[this.cpuColor];
     }
 
     judge(scores) {
-        const canFlipBlack = this.board.canFlip(this.black);
-        const canFlipWhite = this.board.canFlip(this.white);
+        const canFlipBlack = this.board.canFlip(this.colors.black);
+        const canFlipWhite = this.board.canFlip(this.colors.white);
 
         const allCellsFilled = scores.black + scores.white === 64;
 
@@ -113,11 +139,11 @@ class Reversi {
         } else if (!canFlipBlack) {
             // MYMEMO: しばらくしたらメッセージを消したい
             this.showMessage("黒スキップ");
-            this.userTurn = false;
+            this.userTurn = this.userColor === "black" ? false : true;
         } else if (!canFlipWhite) {
             // MYMEMO: しばらくしたらメッセージを消したい
             this.showMessage("白スキップ");
-            this.userTurn = true;
+            this.userTurn = this.userColor === "white" ? false : true;
         } else {
             this.userTurn = !this.userTurn;
         }
@@ -135,8 +161,10 @@ class Board {
         this.boadSize = 8;
 
         this.empty = 0;
-        this.black = 1;
-        this.white = 2;
+        this.colors = {
+            black: 1,
+            white: 2,
+        }
     }
 
     generate(targetEl, game) {
@@ -148,7 +176,6 @@ class Board {
                 const td = document.createElement('td');
                 td.className = 'cell';
                 td.id = 'cell' + i + j;
-                const self = this;
                 td.onclick = (function(e) {game.clickCell(e)});
                 tr.appendChild(td);
             }
@@ -166,10 +193,10 @@ class Board {
         for (let x = 0; x < this.boadSize; x++) {
             for (let y = 0; y < this.boadSize; y++) {
                 switch (this.cells[x][y]) {
-                    case this.black:
+                    case this.colors.black:
                         scoreBlack++;
                         break;
-                    case this.white:
+                    case this.colors.white:
                         scoreWhite++;
                         break;
                 }
