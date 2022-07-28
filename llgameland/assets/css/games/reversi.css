@@ -1,14 +1,14 @@
 #board {
-    background-color: #555555;
+    background-color: #d0d0d0;
 }
 
 td.cell {
-    background-color: #FFB27F;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
+    background-color: #329532;
+    width: 8.125vmin;
+    height: 8.125vmin;
+    line-height: 8.125vmin;
     margin: 2px;
-    font-size: 50px;
+    font-size: 8vmin;
     text-align: center;
 }
 
