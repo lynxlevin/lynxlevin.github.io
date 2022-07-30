@@ -94,13 +94,13 @@ describe('Reversi.judge', () => {
         const game = new Reversi();
         const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation(() => true);
         const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
+        game.currentPlayer = game.player1;
 
-        const originalUserTurn = game.userTurn;
         const scores = {black: 5, white: 5,};
         game.judge(scores);
         expect(spyCanFlip).toHaveBeenCalledTimes(2);
         expect(spyShowMessage).toHaveBeenCalledTimes(0);
-        expect(game.userTurn).toBe(!originalUserTurn);
+        expect(game.currentPlayer).toBe(game.player2);
     });
 });
 
