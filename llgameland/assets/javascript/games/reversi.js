@@ -47,34 +47,46 @@ class Reversi {
         this.putStone(4, 3, this.colors.white);
     }
 
+    player1Act(i, j) {
+        if (!this.userTurn) return;
+        const result = this.flipStones(i, j, this.userColor);
+        if (result) this.endTurn();
+    }
+
+    player2Act(i, j) {
+        if (this.userTurn) return;
+        const result = this.flipStones(i, j, this.cpuColor);
+        if (result) this.endTurn();
+    }
+
     endTurn() {
         const scores = this.board.calcScore();
         this.screen.updateScoreInfo(scores);
         this.judge(scores);
         const self = this;
         if (!self.userTurn) {
-            // MYMEMO: Computer classに持っていきたい
+            // MYMEMO: Player typeにより処理を分岐する
+            // cpu.play, onclickでカスタムイベントをトリガー (player1Action, player2Action)
+            // カスタムイベントが発火したら、flipStones, endTurnをする
+            // イベントにpropsを渡せないなら、Player.targetを更新する
             this.cpuTimer = setTimeout(function() {
                 const target = self.cpu.think(self.board);
-                self.flipStones(target.i, target.j, target.colorName);
-                self.endTurn();
+                self.player2Act(target.i, target.j);
             }, 750);
         }
     }
 
     clickCell(e) {
-        if (!this.userTurn) return;
         const id = e.target.id;
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
-        const result = this.flipStones(i, j, this.userColor);
-        if (result) this.endTurn();
+        this.player1Act(i, j);
     }
 
     flipStones(i, j, colorName) {
-        if (i < 0 || j < 0) return;
-
         let result = false;
+        if (i < 0 || j < 0) return result;
+
         const flipped = this.board.getFlipCells(i, j, colorName);
 
         if (flipped.length > 0) {
