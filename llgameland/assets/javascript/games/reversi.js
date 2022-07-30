@@ -1,99 +1,87 @@
 window.addEventListener("load", () => {
     "use strict";
     const game = new Reversi();
-    game.initializeGame();
-    // MYMEMO: refactor
-    const restartBtn = document.getElementById("restart-game");
-    restartBtn.onclick = (function() {const game = new Reversi(); game.initializeGame();});
+    game.start();
 });
 
 class Reversi {
     constructor() {
-        this.doms = {
-            // select1: document.getElementById("select1"),
-            blackInfo: document.getElementById("black_info"),
-            whiteInfo: document.getElementById("white_info"),
-            board: document.getElementById("board"),
-            clearMessage: document.getElementById("clear-message"),
+        this.cpuTimer;
+
+        this.colors = {
+            black: 1,
+            white: 2,
         };
+        // MYMEMO: player class を作るまでの暫定
+        this.userColor = "white";
+        this.cpuColor = "black";
 
-        this.weightData = [
-            [30, -12, 0, -1, -1, 0, -12, 30],
-            [-12, -15, -3, -3, -3, -3, -15, -12],
-            [0, -3, 0, -1, -1, 0, -3, 0],
-            [-1, -3, -1, -1, -1, -1, -3, -1],
-            [-1, -3, -1, -1, -1, -1, -3, -1],
-            [0, -3, 0, -1, -1, 0, -3, 0],
-            [-12, -15, -3, -3, -3, -3, -15, -12],
-            [30, -12, 0, -1, -1, 0, -12, 30],
-        ];
-        this.empty = 0;
-        this.black = 1;
-        this.white = 2;
-
-        this.cells = [];
-        // MYMEMO: 先攻、後攻選べるように。そうすると、自分の色を変える方がいいかも
+        // MYMEMO: 先攻、後攻選べるように。
         this.userTurn = false;
+
+        this.board = new Board(this.colors);
+        this.cpu = new Computer(this.colors[this.cpuColor]);
+        this.screen = new ScreenDoms(this.userColor, this.cpuColor);
     }
 
-    initializeGame() {
-        this.refreshBoard();
-        for (let i = 0; i < 8; i++) {
-            const tr = document.createElement('tr');
-            // MYMEMO: refactor
-            this.cells[i] = [this.empty, this.empty, this.empty, this.empty, this.empty, this.empty, this.empty, this.empty];
-            for (let j = 0; j < 8; j++) {
-                const td = document.createElement('td');
-                td.className = 'cell';
-                td.id = 'cell' + i + j;
-                const self = this;
-                td.onclick = (function(e) {self.clickCell(e, self)});
-                tr.appendChild(td);
-            }
-            this.doms.board.appendChild(tr);
-        }
-        this.putStone(3, 3, this.black);
-        this.putStone(4, 4, this.black);
-        this.putStone(3, 4, this.white);
-        this.putStone(4, 3, this.white);
+    start() {
+        const self = this;
+        this.screen.setRestartBtn(function() {self.initialize();});
+        this.initialize();
+    }
+
+    initialize() {
+        clearTimeout(this.cpuTimer);
+        this.userTurn = false;
+        this.screen.initializeScreen();
+        const self = this;
+        this.board.generate(this.screen, function(e) {self.clickCell(e)});
+        this.putInitialStones();
         this.endTurn();
     }
 
-    refreshBoard() {
-        const parent = this.doms.board
-        while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
-        }
+    putInitialStones() {
+        this.putStone(3, 3, this.colors.black);
+        this.putStone(4, 4, this.colors.black);
+        this.putStone(3, 4, this.colors.white);
+        this.putStone(4, 3, this.colors.white);
     }
 
     endTurn() {
-        const scores = this.calcScore(this.cells);
-        this.updateScoreInfo(scores);
+        const scores = this.board.calcScore();
+        this.screen.updateScoreInfo(scores);
         this.judge(scores);
         const self = this;
         if (!self.userTurn) {
-            setTimeout(function() {self.think(self)}, 750);
+            // MYMEMO: Computer classに持っていきたい
+            this.cpuTimer = setTimeout(function() {
+                const target = self.cpu.think(self.board);
+                self.flipStones(target.i, target.j, target.color);
+                self.endTurn();
+            }, 750);
         }
     }
 
-    clickCell(e, cls) {
-        if (!cls.userTurn) return;
+    clickCell(e) {
+        if (!this.userTurn) return;
         const id = e.target.id;
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
-        const result = cls.flipStones(i, j, cls.black, cls);
-        if (result) cls.endTurn();
+        const result = this.flipStones(i, j, this.colors[this.userColor]);
+        if (result) this.endTurn();
     }
 
-    flipStones(i, j, color, cls) {
+    flipStones(i, j, color) {
+        if (i < 0 || j < 0) return;
+
         let result = false;
-        const flipped = cls.getFlipCells(i, j, color);
+        const flipped = this.board.getFlipCells(i, j, color);
 
         if (flipped.length > 0) {
             for (let k = 0; k < flipped.length; k++) {
-                cls.putStone(flipped[k][0], flipped[k][1], color);
+                this.putStone(flipped[k][0], flipped[k][1], color);
             }
-            cls.putStone(i, j, color);
+            this.putStone(i, j, color);
             result = true;
         }
 
@@ -101,23 +89,64 @@ class Reversi {
     }
 
     putStone(i, j, color) {
-        const cell = document.getElementById("cell" + i + j);
-        // MYMEMO: cssを使うように
-        cell.textContent = "●";
-        cell.className = "cell " + (color === this.black ? "black" : "white");
+        const colorName = color === this.colors.black ? "black" : "white";
+        this.screen.putStone(i, j, colorName)
+        this.board.putStone(i, j, color);
+    }
+
+    judge(scores) {
+        const canFlipBlack = this.board.canFlip(this.colors.black);
+        const canFlipWhite = this.board.canFlip(this.colors.white);
+
+        const allCellsFilled = scores.black + scores.white === 64;
+
+        if (allCellsFilled || !(canFlipBlack || canFlipWhite)) {
+            // MYMEMO: 結果をちゃんと表示したい
+            this.screen.showMessage("ゲームセット");
+        } else if (!canFlipBlack) {
+            // MYMEMO: しばらくしたらメッセージを消したい
+            this.screen.showMessage("黒スキップ");
+            this.userTurn = this.userColor === "black" ? false : true;
+        } else if (!canFlipWhite) {
+            // MYMEMO: しばらくしたらメッセージを消したい
+            this.screen.showMessage("白スキップ");
+            this.userTurn = this.userColor === "white" ? false : true;
+        } else {
+            this.userTurn = !this.userTurn;
+        }
+    }
+}
+
+class Board {
+    constructor(colors) {
+        this.cells = [];
+        this.boardSize = 8;
+
+        this.empty = 0;
+        this.colors = colors;
+    }
+
+    generate(screen, func) {
+        screen.generateBoard(this.boardSize, func);
+        for (let i = 0; i < this.boardSize; i++) {
+            this.cells[i] = [this.empty, this.empty, this.empty, this.empty, this.empty, this.empty, this.empty, this.empty];
+        }
+    }
+
+    putStone(i, j, color) {
         this.cells[i][j] = color;
     }
 
-    calcScore(cells) {
+    calcScore() {
         let scoreBlack = 0;
         let scoreWhite = 0;
-        for (let x = 0; x < 8; x++) {
-            for (let y = 0; y < 8; y++) {
-                switch (cells[x][y]) {
-                    case this.black:
+        for (let x = 0; x < this.boardSize; x++) {
+            for (let y = 0; y < this.boardSize; y++) {
+                switch (this.cells[x][y]) {
+                    case this.colors.black:
                         scoreBlack++;
                         break;
-                    case this.white:
+                    case this.colors.white:
                         scoreWhite++;
                         break;
                 }
@@ -129,31 +158,9 @@ class Reversi {
         };
     }
 
-    updateScoreInfo(scores) {
-        this.doms.blackInfo.textContent = scores.black;
-        this.doms.whiteInfo.textContent = scores.white;
-    }
-
-    judge(scores) {
-        const canFlipBlack = this.canFlip(this.black);
-        const canFlipWhite = this.canFlip(this.white);
-
-        const allCellsFilled = scores.black + scores.white === 64;
-
-        if (allCellsFilled || !(canFlipBlack || canFlipWhite)) {
-            // MYMEMO: 結果をちゃんと表示したい
-            this.showMessage("ゲームセット");
-        } else if (!canFlipBlack) {
-            // MYMEMO: しばらくしたらメッセージを消したい
-            this.showMessage("黒スキップ");
-            this.userTurn = false;
-        } else if (!canFlipWhite) {
-            // MYMEMO: しばらくしたらメッセージを消したい
-            this.showMessage("白スキップ");
-            this.userTurn = true;
-        } else {
-            this.userTurn = !this.userTurn;
-        }
+    copyCells() {
+        const tmpCells = JSON.parse(JSON.stringify(this.cells));
+        return tmpCells;
     }
 
     canFlip(color) {
@@ -198,8 +205,8 @@ class Reversi {
         let x = i + dx;
         let y = j + dy;
 
-        const xOutOfBound = x < 0 || x > 7;
-        const yOutOfBound = y < 0 || y > 7;
+        const xOutOfBound = x < 0 || x > (this.boardSize - 1);
+        const yOutOfBound = y < 0 || y > (this.boardSize - 1);
         if (xOutOfBound || yOutOfBound) return [];
 
         const sameColor = this.cells[x][y] === color;
@@ -213,8 +220,8 @@ class Reversi {
             x += dx;
             y += dy;
 
-            const xOutOfBound = x < 0 || x > 7;
-            const yOutOfBound = y < 0 || y > 7;
+            const xOutOfBound = x < 0 || x > (this.boardSize - 1);
+            const yOutOfBound = y < 0 || y > (this.boardSize - 1);
             if (xOutOfBound || yOutOfBound) return [];
             const emptyCell = this.cells[x][y] === this.empty;
             if (emptyCell) return [];
@@ -227,29 +234,41 @@ class Reversi {
             }
         }
     }
+}
 
-    showMessage(message) {
-        this.doms.clearMessage.textContent = message;
-        // MYMEMO: 本ではここでメッセージクリアのタイムアウト
+class Computer {
+    constructor(color) {
+        this.weightData = [
+            [30, -12, 0, -1, -1, 0, -12, 30],
+            [-12, -15, -3, -3, -3, -3, -15, -12],
+            [0, -3, 0, -1, -1, 0, -3, 0],
+            [-1, -3, -1, -1, -1, -1, -3, -1],
+            [-1, -3, -1, -1, -1, -1, -3, -1],
+            [0, -3, 0, -1, -1, 0, -3, 0],
+            [-12, -15, -3, -3, -3, -3, -15, -12],
+            [30, -12, 0, -1, -1, 0, -12, 30],
+        ];
+
+        this.color = color;
     }
 
-    think(cls) {
+    think(board) {
         let highScore = -1000;
         let px = -1;
         let py = -1;
 
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                const tmpCells = cls.copyCells(cls.cells);
-                const flipped = cls.getFlipCells(x, y, cls.white);
+                const tmpCells = board.copyCells();
+                const flipped = board.getFlipCells(x, y, this.color);
                 if (flipped.length > 0) {
                     for (var i = 0; i < flipped.length; i++) {
                         const p = flipped[i][0];
                         const q = flipped[i][1];
-                        tmpCells[p][q] = cls.white;
-                        tmpCells[x][y] = cls.white;
+                        tmpCells[p][q] = this.color;
+                        tmpCells[x][y] = this.color;
                     }
-                    const score = cls.calcWeightData(tmpCells);
+                    const score = this.calcWeightData(tmpCells);
                     if (score > highScore) {
                         highScore = score;
                         px = x;
@@ -258,22 +277,15 @@ class Reversi {
                 }
             }
         }
-        if (px >= 0 && py >= 0) {
-            cls.flipStones(px, py, cls.white, cls);
-        }
-        cls.endTurn();
-    }
 
-    copyCells(cells) {
-        const tmpCells = JSON.parse(JSON.stringify(cells));
-        return tmpCells;
+        return ({i: px, j: py, color: this.color});
     }
 
     calcWeightData(tmpCells) {
         let score = 0;
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                if (tmpCells[x][y] === this.white) {
+                if (tmpCells[x][y] === this.color) {
                     score += this.weightData[x][y];
                 }
             }
@@ -282,4 +294,79 @@ class Reversi {
     }
 }
 
-module.exports = Reversi;
+class ScreenDoms {
+    constructor(userColor, cpuColor) {
+        this.doms = {
+            // select1: document.getElementById("select1"),
+            // MYMEMO: player1ColorName
+            userInfoColor: document.getElementById("player_info_color"),
+            // MYMEMO: player2ColorName
+            cpuInfoColor: document.getElementById("cpu_info_color"),
+            // MYMEMO: player1Score
+            userInfo: document.getElementById("player_info_num"),
+            // MYMEMO: player2Score
+            cpuInfo: document.getElementById("cpu_info_num"),
+            board: document.getElementById("board"),
+            clearMessage: document.getElementById("clear-message"),
+            restartBtn: document.getElementById("restart-game"),
+        };
+
+        this.userColor = userColor;
+        this.cpuColor = cpuColor;
+    }
+
+    initializeScreen() {
+        const parent = this.doms.board
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+        this.doms.userInfoColor.textContent = this.userColor === "black" ? "黒" : "白";
+        this.doms.cpuInfoColor.textContent = this.cpuColor === "black" ? "黒" : "白";
+        this.doms.userInfo.textContent = "";
+        this.doms.cpuInfo.textContent = "";
+        this.doms.clearMessage.textContent = "";
+    }
+
+    showMessage(message) {
+        this.doms.clearMessage.textContent = message;
+        // MYMEMO: 本ではここでメッセージクリアのタイムアウト
+    }
+
+    updateScoreInfo(scores) {
+        this.doms.userInfo.textContent = scores[this.userColor];
+        this.doms.cpuInfo.textContent = scores[this.cpuColor];
+    }
+
+    putStone(i, j, colorName) {
+        const cell = document.getElementById("cell" + i + j);
+        // MYMEMO: cssを使うように
+        cell.textContent = "●";
+        // MYMEMO: classList使いたい
+        cell.className = "cell " + colorName;
+    }
+
+    setRestartBtn(func) {
+        this.doms.restartBtn.onclick = func;
+    }
+
+    generateBoard(boardSize, func) {
+        for (let i = 0; i < boardSize; i++) {
+            const tr = document.createElement('tr');
+            for (let j = 0; j < boardSize; j++) {
+                const td = document.createElement('td');
+                td.className = 'cell';
+                td.id = 'cell' + i + j;
+                td.onclick = func;
+                tr.appendChild(td);
+            }
+            this.doms.board.appendChild(tr);
+        }
+    }
+}
+
+module.exports = {
+    Reversi,
+    Board,
+    Computer,
+    ScreenDoms,
+};
