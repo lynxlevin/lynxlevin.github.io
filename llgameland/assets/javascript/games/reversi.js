@@ -9,22 +9,18 @@ class Reversi {
         this.cpuTimer;
 
         this.colors = {
-            black: 1,
-            white: 2,
-        };
-        this.colorNames = {
             black: "black",
             white: "white",
         }
         // MYMEMO: player class を作るまでの暫定
-        this.userColor = this.colorNames.white;
-        this.cpuColor = this.colorNames.black;
+        this.userColor = this.colors.white;
+        this.cpuColor = this.colors.black;
 
         // MYMEMO: 先攻、後攻選べるように。
         this.userTurn = false;
 
         this.board = new Board();
-        this.cpu = new Computer(this.colors[this.cpuColor], this.cpuColor);
+        this.cpu = new Computer(this.cpuColor);
         this.screen = new ScreenDoms(this.userColor, this.cpuColor);
     }
 
@@ -45,10 +41,10 @@ class Reversi {
     }
 
     putInitialStones() {
-        this.putStone(3, 3, this.colorNames.black);
-        this.putStone(4, 4, this.colorNames.black);
-        this.putStone(3, 4, this.colorNames.white);
-        this.putStone(4, 3, this.colorNames.white);
+        this.putStone(3, 3, this.colors.black);
+        this.putStone(4, 4, this.colors.black);
+        this.putStone(3, 4, this.colors.white);
+        this.putStone(4, 3, this.colors.white);
     }
 
     endTurn() {
@@ -98,8 +94,8 @@ class Reversi {
     }
 
     judge(scores) {
-        const canFlipBlack = this.board.canFlip(this.colorNames.black);
-        const canFlipWhite = this.board.canFlip(this.colorNames.white);
+        const canFlipBlack = this.board.canFlip(this.colors.black);
+        const canFlipWhite = this.board.canFlip(this.colors.white);
 
         const allCellsFilled = scores.black + scores.white === 64;
 
@@ -126,7 +122,7 @@ class Board {
         this.boardSize = 8;
 
         this.empty = 0;
-        this.colors = {
+        this.colorValues = {
             black: 1,
             white: 2,
         };
@@ -140,7 +136,7 @@ class Board {
     }
 
     putStone(i, j, colorName) {
-        this.cells[i][j] = this.colors[colorName];
+        this.cells[i][j] = this.colorValues[colorName];
     }
 
     calcScore() {
@@ -149,10 +145,10 @@ class Board {
         for (let x = 0; x < this.boardSize; x++) {
             for (let y = 0; y < this.boardSize; y++) {
                 switch (this.cells[x][y]) {
-                    case this.colors.black:
+                    case this.colorValues.black:
                         scoreBlack++;
                         break;
-                    case this.colors.white:
+                    case this.colorValues.white:
                         scoreWhite++;
                         break;
                 }
@@ -185,7 +181,7 @@ class Board {
     }
 
     getFlipCells(i, j, colorName) {
-        const color = this.colors[colorName];
+        const color = this.colorValues[colorName];
         const stoneAlreadyExists = this.cells[i][j] !== this.empty;
         if (stoneAlreadyExists) return [];
 
@@ -244,7 +240,7 @@ class Board {
 }
 
 class Computer {
-    constructor(color, colorName) {
+    constructor(colorName) {
         this.weightData = [
             [30, -12, 0, -1, -1, 0, -12, 30],
             [-12, -15, -3, -3, -3, -3, -15, -12],
@@ -256,8 +252,11 @@ class Computer {
             [30, -12, 0, -1, -1, 0, -12, 30],
         ];
 
-        this.color = color;
         this.colorName = colorName;
+        this.colorValues = {
+            black: 1,
+            white: 2,
+        };
     }
 
     // MYMEMO: decouple cells
@@ -274,8 +273,8 @@ class Computer {
                     for (var i = 0; i < flipped.length; i++) {
                         const p = flipped[i][0];
                         const q = flipped[i][1];
-                        tmpCells[p][q] = this.color;
-                        tmpCells[x][y] = this.color;
+                        tmpCells[p][q] = this.colorValues[this.colorName];
+                        tmpCells[x][y] = this.colorValues[this.colorName];
                     }
                     const score = this.calcWeightData(tmpCells);
                     if (score > highScore) {
@@ -294,7 +293,7 @@ class Computer {
         let score = 0;
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                if (tmpCells[x][y] === this.color) {
+                if (tmpCells[x][y] === this.colorValues[this.colorName]) {
                     score += this.weightData[x][y];
                 }
             }
