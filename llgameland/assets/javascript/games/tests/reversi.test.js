@@ -6,10 +6,11 @@ const Module = require('../reversi.js');
 const Reversi = Module.Reversi;
 const Board = Module.Board;
 const Computer = Module.Computer;
+const ScreenDoms = Module.ScreenDoms;
 
 
 test('test_Board.copyCells', () => {
-    const board = new Board();
+    const board = new Board(new Reversi().colors);
     board.cells = [[1, 2, 3], [0, 1], ["a", "b"]];
     const copiedCells = board.copyCells();
     expect(copiedCells).toEqual(board.cells);
@@ -21,7 +22,7 @@ test('test_Board.copyCells', () => {
 }) ;
 
 test('test_Board.calcScore', () => {
-    const board = new Board();
+    const board = new Board(new Reversi().colors);
     board.cells = [
         [0, 1, 0, 0, 0, 0, 0, 0],
         [0, 1, 0, 0, 0, 0, 0, 0],
@@ -43,9 +44,8 @@ test('test_Board.calcScore', () => {
 describe('Reversi.judge', () => {
     test('test_all_cells_filled', () => {
         const game = new Reversi();
-        game.board = new Board();
         const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation(() => true);
-        const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
+        const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 32, white: 32,};
         game.judge(scores);
@@ -56,9 +56,8 @@ describe('Reversi.judge', () => {
 
     test('test_cannot_flip_both', () => {
         const game = new Reversi();
-        game.board = new Board();
         const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation(() => false);
-        const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
+        const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 0, white: 0,};
         game.judge(scores);
@@ -69,9 +68,8 @@ describe('Reversi.judge', () => {
 
     test('test_cannot_flip_black', () => {
         const game = new Reversi();
-        game.board = new Board();
         const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.colors.black));
-        const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
+        const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 5, white: 5,};
         game.judge(scores);
@@ -82,9 +80,8 @@ describe('Reversi.judge', () => {
 
     test('test_cannot_flip_white', () => {
         const game = new Reversi();
-        game.board = new Board();
         const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.colors.white));
-        const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
+        const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 5, white: 5,};
         game.judge(scores);
@@ -95,9 +92,8 @@ describe('Reversi.judge', () => {
 
     test('test_all_checks_pass', () => {
         const game = new Reversi();
-        game.board = new Board();
         const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation(() => true);
-        const spyShowMessage = jest.spyOn(game, "showMessage").mockImplementation(() => null);
+        const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const originalUserTurn = game.userTurn;
         const scores = {black: 5, white: 5,};
@@ -111,7 +107,6 @@ describe('Reversi.judge', () => {
 describe('Reversi.flipStones', () => {
     it('test_flipped', () => {
         const game = new Reversi();
-        game.board = new Board();
         const flipped = [[0, 1], [4, 5]];
         const i = 3;
         const j = 6;
@@ -134,7 +129,6 @@ describe('Reversi.flipStones', () => {
 
     it('test_not_flipped', () => {
         const game = new Reversi();
-        game.board = new Board();
         const flipped = [];
         const i = 3;
         const j = 6;
@@ -155,7 +149,7 @@ describe('Reversi.flipStones', () => {
 
 describe('Board.canFlip', () => {
     it('test_can_flip', () => {
-        const board = new Board();
+        const board = new Board(new Reversi().colors);
         const flipped = [[0, 1], [4, 5]];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
         const color = board.colors.black;
@@ -167,7 +161,7 @@ describe('Board.canFlip', () => {
     });
 
     it('test_cannot_flip', () => {
-        const board = new Board();
+        const board = new Board(new Reversi().colors);
         const flipped = [];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
         const color = board.colors.black;
