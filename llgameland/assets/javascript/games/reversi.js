@@ -99,8 +99,8 @@ class Reversi {
     }
 
     judge(scores) {
-        const canFlipBlack = this.board.canFlip(this.colors.black);
-        const canFlipWhite = this.board.canFlip(this.colors.white);
+        const canFlipBlack = this.board.canFlip(this.colorNames.black);
+        const canFlipWhite = this.board.canFlip(this.colorNames.white);
 
         const allCellsFilled = scores.black + scores.white === 64;
 
@@ -170,8 +170,10 @@ class Board {
         return tmpCells;
     }
 
-    canFlip(color) {
+    canFlip(colorName) {
         let result = false;
+
+        const color = this.colors[colorName];
 
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
@@ -260,7 +262,7 @@ class Computer {
         this.colorName = colorName;
     }
 
-    // MYMEMO: decouple board
+    // MYMEMO: decouple cells
     think(board) {
         let highScore = -1000;
         let px = -1;

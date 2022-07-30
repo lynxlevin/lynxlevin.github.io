@@ -68,7 +68,7 @@ describe('Reversi.judge', () => {
 
     test('test_cannot_flip_black', () => {
         const game = new Reversi();
-        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.colors.black));
+        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((colorName) => colorName !== "black");
         const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 5, white: 5,};
@@ -80,7 +80,7 @@ describe('Reversi.judge', () => {
 
     test('test_cannot_flip_white', () => {
         const game = new Reversi();
-        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((num) => !(num === game.colors.white));
+        const spyCanFlip = jest.spyOn(game.board, "canFlip").mockImplementation((colorName) => colorName !== "white");
         const spyShowMessage = jest.spyOn(game.screen, "showMessage").mockImplementation(() => null);
 
         const scores = {black: 5, white: 5,};
@@ -154,9 +154,9 @@ describe('Board.canFlip', () => {
         const board = new Board();
         const flipped = [[0, 1], [4, 5]];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
-        const color = board.colors.black;
+        const colorName = "black";
 
-        const result = board.canFlip(color);
+        const result = board.canFlip(colorName);
 
         expect(spyGetFlipCells).toHaveBeenCalledTimes(64);
         expect(result).toBe(true);
@@ -166,9 +166,9 @@ describe('Board.canFlip', () => {
         const board = new Board();
         const flipped = [];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
-        const color = board.colors.black;
+        const colorName = "black";
 
-        const result = board.canFlip(color);
+        const result = board.canFlip(colorName);
 
         expect(spyGetFlipCells).toHaveBeenCalledTimes(64);
         expect(result).toBe(false);
