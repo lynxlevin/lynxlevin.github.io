@@ -77,10 +77,9 @@ class Reversi {
 
     flipStones(i, j, colorName) {
         if (i < 0 || j < 0) return;
-        const color = this.colors[colorName];
 
         let result = false;
-        const flipped = this.board.getFlipCells(i, j, color);
+        const flipped = this.board.getFlipCells(i, j, colorName);
 
         if (flipped.length > 0) {
             for (let k = 0; k < flipped.length; k++) {
@@ -173,11 +172,9 @@ class Board {
     canFlip(colorName) {
         let result = false;
 
-        const color = this.colors[colorName];
-
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                const flipped = this.getFlipCells(x, y, color);
+                const flipped = this.getFlipCells(x, y, colorName);
                 if (flipped.length > 0) {
                     result = true;
                 }
@@ -187,7 +184,8 @@ class Board {
         return result;
     }
 
-    getFlipCells(i, j, color) {
+    getFlipCells(i, j, colorName) {
+        const color = this.colors[colorName];
         const stoneAlreadyExists = this.cells[i][j] !== this.empty;
         if (stoneAlreadyExists) return [];
 
@@ -271,7 +269,7 @@ class Computer {
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
                 const tmpCells = board.copyCells();
-                const flipped = board.getFlipCells(x, y, this.color);
+                const flipped = board.getFlipCells(x, y, this.colorName);
                 if (flipped.length > 0) {
                     for (var i = 0; i < flipped.length; i++) {
                         const p = flipped[i][0];
