@@ -12,14 +12,18 @@ class Reversi {
             black: 1,
             white: 2,
         };
+        this.colorNames = {
+            black: "black",
+            white: "white",
+        }
         // MYMEMO: player class を作るまでの暫定
-        this.userColor = "white";
-        this.cpuColor = "black";
+        this.userColor = this.colorNames.white;
+        this.cpuColor = this.colorNames.black;
 
         // MYMEMO: 先攻、後攻選べるように。
         this.userTurn = false;
 
-        this.board = new Board(this.colors);
+        this.board = new Board();
         this.cpu = new Computer(this.colors[this.cpuColor]);
         this.screen = new ScreenDoms(this.userColor, this.cpuColor);
     }
@@ -41,10 +45,10 @@ class Reversi {
     }
 
     putInitialStones() {
-        this.putStone(3, 3, this.colors.black);
-        this.putStone(4, 4, this.colors.black);
-        this.putStone(3, 4, this.colors.white);
-        this.putStone(4, 3, this.colors.white);
+        this.putStone(3, 3, this.colorNames.black);
+        this.putStone(4, 4, this.colorNames.black);
+        this.putStone(3, 4, this.colorNames.white);
+        this.putStone(4, 3, this.colorNames.white);
     }
 
     endTurn() {
@@ -73,25 +77,25 @@ class Reversi {
 
     flipStones(i, j, color) {
         if (i < 0 || j < 0) return;
+        const colorName = color === this.colors.black ? "black" : "white";
 
         let result = false;
         const flipped = this.board.getFlipCells(i, j, color);
 
         if (flipped.length > 0) {
             for (let k = 0; k < flipped.length; k++) {
-                this.putStone(flipped[k][0], flipped[k][1], color);
+                this.putStone(flipped[k][0], flipped[k][1], colorName);
             }
-            this.putStone(i, j, color);
+            this.putStone(i, j, colorName);
             result = true;
         }
 
         return result;
     }
 
-    putStone(i, j, color) {
-        const colorName = color === this.colors.black ? "black" : "white";
+    putStone(i, j, colorName) {
         this.screen.putStone(i, j, colorName)
-        this.board.putStone(i, j, color);
+        this.board.putStone(i, j, colorName);
     }
 
     judge(scores) {
@@ -118,12 +122,15 @@ class Reversi {
 }
 
 class Board {
-    constructor(colors) {
+    constructor() {
         this.cells = [];
         this.boardSize = 8;
 
         this.empty = 0;
-        this.colors = colors;
+        this.colors = {
+            black: 1,
+            white: 2,
+        };
     }
 
     generate(screen, func) {
@@ -133,8 +140,8 @@ class Board {
         }
     }
 
-    putStone(i, j, color) {
-        this.cells[i][j] = color;
+    putStone(i, j, colorName) {
+        this.cells[i][j] = this.colors[colorName];
     }
 
     calcScore() {
@@ -252,6 +259,7 @@ class Computer {
         this.color = color;
     }
 
+    // MYMEMO: decouple board
     think(board) {
         let highScore = -1000;
         let px = -1;

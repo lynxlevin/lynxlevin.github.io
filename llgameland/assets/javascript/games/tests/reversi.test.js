@@ -10,7 +10,7 @@ const ScreenDoms = Module.ScreenDoms;
 
 
 test('test_Board.copyCells', () => {
-    const board = new Board(new Reversi().colors);
+    const board = new Board();
     board.cells = [[1, 2, 3], [0, 1], ["a", "b"]];
     const copiedCells = board.copyCells();
     expect(copiedCells).toEqual(board.cells);
@@ -22,7 +22,7 @@ test('test_Board.copyCells', () => {
 }) ;
 
 test('test_Board.calcScore', () => {
-    const board = new Board(new Reversi().colors);
+    const board = new Board();
     board.cells = [
         [0, 1, 0, 0, 0, 0, 0, 0],
         [0, 1, 0, 0, 0, 0, 0, 0],
@@ -149,7 +149,7 @@ describe('Reversi.flipStones', () => {
 
 describe('Board.canFlip', () => {
     it('test_can_flip', () => {
-        const board = new Board(new Reversi().colors);
+        const board = new Board();
         const flipped = [[0, 1], [4, 5]];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
         const color = board.colors.black;
@@ -161,7 +161,7 @@ describe('Board.canFlip', () => {
     });
 
     it('test_cannot_flip', () => {
-        const board = new Board(new Reversi().colors);
+        const board = new Board();
         const flipped = [];
         const spyGetFlipCells = jest.spyOn(board, "getFlipCells").mockImplementation(() => flipped);
         const color = board.colors.black;
