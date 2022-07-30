@@ -111,18 +111,19 @@ describe('Reversi.flipStones', () => {
         const i = 3;
         const j = 6;
         const color = game.colors.black;
+        const colorName = "black";
         const spyGetFlipCells = jest.spyOn(game.board, "getFlipCells").mockImplementation(() => flipped);
         const spyPutStone = jest.spyOn(game, "putStone").mockImplementation(() => null);
 
-        const result = game.flipStones(i, j, color, game);
+        const result = game.flipStones(i, j, colorName);
 
         expect(spyGetFlipCells).toHaveBeenCalledTimes(1);
         expect(spyGetFlipCells).toHaveBeenCalledWith(i, j, color);
 
         expect(spyPutStone).toHaveBeenCalledTimes(3);
-        expect(spyPutStone).toHaveBeenCalledWith(flipped[0][0], flipped[0][1], color);
-        expect(spyPutStone).toHaveBeenCalledWith(flipped[1][0], flipped[1][1], color);
-        expect(spyPutStone).toHaveBeenCalledWith(i, j, color);
+        expect(spyPutStone).toHaveBeenCalledWith(flipped[0][0], flipped[0][1], colorName);
+        expect(spyPutStone).toHaveBeenCalledWith(flipped[1][0], flipped[1][1], colorName);
+        expect(spyPutStone).toHaveBeenCalledWith(i, j, colorName);
 
         expect(result).toBe(true);
     });
@@ -133,10 +134,11 @@ describe('Reversi.flipStones', () => {
         const i = 3;
         const j = 6;
         const color = game.colors.black;
+        const colorName = "black";
         const spyGetFlipCells = jest.spyOn(game.board, "getFlipCells").mockImplementation(() => flipped);
         const spyPutStone = jest.spyOn(game, "putStone").mockImplementation(() => null);
 
-        const result = game.flipStones(i, j, color, game);
+        const result = game.flipStones(i, j, colorName);
 
         expect(spyGetFlipCells).toHaveBeenCalledTimes(1);
         expect(spyGetFlipCells).toHaveBeenCalledWith(i, j, color);

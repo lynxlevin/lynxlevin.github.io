@@ -24,7 +24,7 @@ class Reversi {
         this.userTurn = false;
 
         this.board = new Board();
-        this.cpu = new Computer(this.colors[this.cpuColor]);
+        this.cpu = new Computer(this.colors[this.cpuColor], this.cpuColor);
         this.screen = new ScreenDoms(this.userColor, this.cpuColor);
     }
 
@@ -60,7 +60,7 @@ class Reversi {
             // MYMEMO: Computer classに持っていきたい
             this.cpuTimer = setTimeout(function() {
                 const target = self.cpu.think(self.board);
-                self.flipStones(target.i, target.j, target.color);
+                self.flipStones(target.i, target.j, target.colorName);
                 self.endTurn();
             }, 750);
         }
@@ -71,13 +71,13 @@ class Reversi {
         const id = e.target.id;
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
-        const result = this.flipStones(i, j, this.colors[this.userColor]);
+        const result = this.flipStones(i, j, this.userColor);
         if (result) this.endTurn();
     }
 
-    flipStones(i, j, color) {
+    flipStones(i, j, colorName) {
         if (i < 0 || j < 0) return;
-        const colorName = color === this.colors.black ? "black" : "white";
+        const color = this.colors[colorName];
 
         let result = false;
         const flipped = this.board.getFlipCells(i, j, color);
@@ -244,7 +244,7 @@ class Board {
 }
 
 class Computer {
-    constructor(color) {
+    constructor(color, colorName) {
         this.weightData = [
             [30, -12, 0, -1, -1, 0, -12, 30],
             [-12, -15, -3, -3, -3, -3, -15, -12],
@@ -257,6 +257,7 @@ class Computer {
         ];
 
         this.color = color;
+        this.colorName = colorName;
     }
 
     // MYMEMO: decouple board
@@ -286,7 +287,7 @@ class Computer {
             }
         }
 
-        return ({i: px, j: py, color: this.color});
+        return ({i: px, j: py, colorName: this.colorName});
     }
 
     calcWeightData(tmpCells) {
