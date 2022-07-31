@@ -9,19 +9,19 @@ class Reversi {
         this.cpuTimer;
 
         this.colors = {
-            black: 1,
-            white: 2,
-        };
-        // MYMEMO: player class を作るまでの暫定
-        this.userColor = "white";
-        this.cpuColor = "black";
+            black: "black",
+            white: "white",
+        }
 
-        // MYMEMO: 先攻、後攻選べるように。
-        this.userTurn = false;
+        this.player1Color = this.colors.white;
+        this.player2Color = this.colors.black;
 
-        this.board = new Board(this.colors);
-        this.cpu = new Computer(this.colors[this.cpuColor]);
-        this.screen = new ScreenDoms(this.userColor, this.cpuColor);
+        this.board = new Board();
+        this.cpu = new Computer(this.player2Color);
+        this.screen = new ScreenDoms(this.player1Color, this.player2Color);
+        this.player1;
+        this.player2;
+        this.currentPlayer;
     }
 
     start() {
@@ -31,12 +31,26 @@ class Reversi {
     }
 
     initialize() {
-        clearTimeout(this.cpuTimer);
-        this.userTurn = false;
-        this.screen.initializeScreen();
+        const settings = this.screen.getSettings();
+        if (settings.playMode === "pvc") {
+            this.player1 = new Player(this.player1Color);
+            this.player2 = new Computer(this.player2Color);
+        } else if (settings.playMode === "pvp") {
+            this.player1 = new Player(this.player1Color);
+            this.player2 = new Player(this.player2Color);
+        } else if (settings.playMode === "cvc") {
+            this.player1 = new Computer(this.player1Color);
+            this.player2 = new Computer(this.player2Color);
+        }
+        if (this.player1.name === "CPU") clearTimeout(this.player1.timer);
+        if (this.player2.name === "CPU") clearTimeout(this.player2.timer);
+        // MYMEMO: 先攻、後攻選べるように。
+        this.currentPlayer = this.player2;
+        this.screen.initializeScreen(this.player1.name, this.player2.name);
         const self = this;
         this.board.generate(this.screen, function(e) {self.clickCell(e)});
         this.putInitialStones();
+        // MYMEMO: ここでendTurnしないようにしたい。どちらが先行か分かりづらいので
         this.endTurn();
     }
 
@@ -47,51 +61,46 @@ class Reversi {
         this.putStone(4, 3, this.colors.white);
     }
 
+    playerAct(i, j, player) {
+        if (this.currentPlayer !== player) return;
+        const result = this.flipStones(i, j, player.colorName);
+        if (result) this.endTurn();
+    }
+
     endTurn() {
         const scores = this.board.calcScore();
         this.screen.updateScoreInfo(scores);
         this.judge(scores);
-        const self = this;
-        if (!self.userTurn) {
-            // MYMEMO: Computer classに持っていきたい
-            this.cpuTimer = setTimeout(function() {
-                const target = self.cpu.think(self.board);
-                self.flipStones(target.i, target.j, target.color);
-                self.endTurn();
-            }, 750);
-        }
+        this.currentPlayer.play(this.board, this);
     }
 
     clickCell(e) {
-        if (!this.userTurn) return;
         const id = e.target.id;
         const i = parseInt(id.charAt(4));
         const j = parseInt(id.charAt(5));
-        const result = this.flipStones(i, j, this.colors[this.userColor]);
-        if (result) this.endTurn();
+        this.playerAct(i, j, this.currentPlayer);
     }
 
-    flipStones(i, j, color) {
-        if (i < 0 || j < 0) return;
-
+    flipStones(i, j, colorName) {
         let result = false;
-        const flipped = this.board.getFlipCells(i, j, color);
+        if (i < 0 || j < 0) return result;
+
+        const flipped = this.board.getFlipCells(i, j, colorName);
 
         if (flipped.length > 0) {
             for (let k = 0; k < flipped.length; k++) {
-                this.putStone(flipped[k][0], flipped[k][1], color);
+                this.putStone(flipped[k][0], flipped[k][1], colorName);
             }
-            this.putStone(i, j, color);
+            this.putStone(i, j, colorName);
             result = true;
         }
 
         return result;
     }
 
-    putStone(i, j, color) {
-        const colorName = color === this.colors.black ? "black" : "white";
+    putStone(i, j, colorName) {
         this.screen.putStone(i, j, colorName)
-        this.board.putStone(i, j, color);
+        this.board.putStone(i, j, colorName);
     }
 
     judge(scores) {
@@ -106,24 +115,31 @@ class Reversi {
         } else if (!canFlipBlack) {
             // MYMEMO: しばらくしたらメッセージを消したい
             this.screen.showMessage("黒スキップ");
-            this.userTurn = this.userColor === "black" ? false : true;
+            this.currentPlayer = this.player1Color === "black" ? this.player2 : this.player1;
         } else if (!canFlipWhite) {
             // MYMEMO: しばらくしたらメッセージを消したい
             this.screen.showMessage("白スキップ");
-            this.userTurn = this.userColor === "white" ? false : true;
+            this.currentPlayer = this.player1Color === "white" ? this.player2 : this.player1;
         } else {
-            this.userTurn = !this.userTurn;
+            this.changeCurrentPlayer();
         }
+    }
+
+    changeCurrentPlayer() {
+        this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
     }
 }
 
 class Board {
-    constructor(colors) {
+    constructor() {
         this.cells = [];
         this.boardSize = 8;
 
         this.empty = 0;
-        this.colors = colors;
+        this.colorValues = {
+            black: 1,
+            white: 2,
+        };
     }
 
     generate(screen, func) {
@@ -133,8 +149,8 @@ class Board {
         }
     }
 
-    putStone(i, j, color) {
-        this.cells[i][j] = color;
+    putStone(i, j, colorName) {
+        this.cells[i][j] = this.colorValues[colorName];
     }
 
     calcScore() {
@@ -143,10 +159,10 @@ class Board {
         for (let x = 0; x < this.boardSize; x++) {
             for (let y = 0; y < this.boardSize; y++) {
                 switch (this.cells[x][y]) {
-                    case this.colors.black:
+                    case this.colorValues.black:
                         scoreBlack++;
                         break;
-                    case this.colors.white:
+                    case this.colorValues.white:
                         scoreWhite++;
                         break;
                 }
@@ -163,12 +179,12 @@ class Board {
         return tmpCells;
     }
 
-    canFlip(color) {
+    canFlip(colorName) {
         let result = false;
 
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                const flipped = this.getFlipCells(x, y, color);
+                const flipped = this.getFlipCells(x, y, colorName);
                 if (flipped.length > 0) {
                     result = true;
                 }
@@ -178,7 +194,8 @@ class Board {
         return result;
     }
 
-    getFlipCells(i, j, color) {
+    getFlipCells(i, j, colorName) {
+        const color = this.colorValues[colorName];
         const stoneAlreadyExists = this.cells[i][j] !== this.empty;
         if (stoneAlreadyExists) return [];
 
@@ -237,7 +254,7 @@ class Board {
 }
 
 class Computer {
-    constructor(color) {
+    constructor(colorName) {
         this.weightData = [
             [30, -12, 0, -1, -1, 0, -12, 30],
             [-12, -15, -3, -3, -3, -3, -15, -12],
@@ -249,10 +266,17 @@ class Computer {
             [30, -12, 0, -1, -1, 0, -12, 30],
         ];
 
-        this.color = color;
+        this.colorName = colorName;
+        this.colorValues = {
+            black: 1,
+            white: 2,
+        };
+        this.timer;
+        this.name = "CPU";
     }
 
-    think(board) {
+    // MYMEMO: decouple cells
+    play(board, game) {
         let highScore = -1000;
         let px = -1;
         let py = -1;
@@ -260,13 +284,13 @@ class Computer {
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
                 const tmpCells = board.copyCells();
-                const flipped = board.getFlipCells(x, y, this.color);
+                const flipped = board.getFlipCells(x, y, this.colorName);
                 if (flipped.length > 0) {
                     for (var i = 0; i < flipped.length; i++) {
                         const p = flipped[i][0];
                         const q = flipped[i][1];
-                        tmpCells[p][q] = this.color;
-                        tmpCells[x][y] = this.color;
+                        tmpCells[p][q] = this.colorValues[this.colorName];
+                        tmpCells[x][y] = this.colorValues[this.colorName];
                     }
                     const score = this.calcWeightData(tmpCells);
                     if (score > highScore) {
@@ -278,14 +302,17 @@ class Computer {
             }
         }
 
-        return ({i: px, j: py, color: this.color});
+        this.timer = setTimeout(
+            () => {game.playerAct(px, py, this);},
+            750,
+        );
     }
 
     calcWeightData(tmpCells) {
         let score = 0;
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
-                if (tmpCells[x][y] === this.color) {
+                if (tmpCells[x][y] === this.colorValues[this.colorName]) {
                     score += this.weightData[x][y];
                 }
             }
@@ -294,14 +321,28 @@ class Computer {
     }
 }
 
+class Player {
+    constructor(colorName) {
+        this.colorName = colorName;
+        this.name = "Player";
+    }
+
+    play() {
+        return;
+    }
+}
+
 class ScreenDoms {
-    constructor(userColor, cpuColor) {
+    constructor(player1Color, player2Color) {
         this.doms = {
             // select1: document.getElementById("select1"),
+            playMode: document.getElementById("play-mode"),
             // MYMEMO: player1ColorName
             userInfoColor: document.getElementById("player_info_color"),
             // MYMEMO: player2ColorName
             cpuInfoColor: document.getElementById("cpu_info_color"),
+            player1Name: document.getElementById("player1_name"),
+            player2Name: document.getElementById("player2_name"),
             // MYMEMO: player1Score
             userInfo: document.getElementById("player_info_num"),
             // MYMEMO: player2Score
@@ -311,30 +352,40 @@ class ScreenDoms {
             restartBtn: document.getElementById("restart-game"),
         };
 
-        this.userColor = userColor;
-        this.cpuColor = cpuColor;
+        this.player1Color = player1Color;
+        this.player2Color = player2Color;
     }
 
-    initializeScreen() {
+    getSettings() {
+        const setting = {
+            playMode: this.doms.playMode.value,
+        };
+        return setting;
+    }
+
+    initializeScreen(player1Name, player2Name) {
         const parent = this.doms.board
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
-        this.doms.userInfoColor.textContent = this.userColor === "black" ? "黒" : "白";
-        this.doms.cpuInfoColor.textContent = this.cpuColor === "black" ? "黒" : "白";
+        this.doms.userInfoColor.textContent = this.player1Color === "black" ? "黒" : "白";
+        this.doms.cpuInfoColor.textContent = this.player2Color === "black" ? "黒" : "白";
+        this.doms.player1Name.textContent = player1Name;
+        this.doms.player2Name.textContent = player2Name;
         this.doms.userInfo.textContent = "";
         this.doms.cpuInfo.textContent = "";
         this.doms.clearMessage.textContent = "";
     }
 
+    // MYMEMO: 白のターン、とか表示したい
     showMessage(message) {
         this.doms.clearMessage.textContent = message;
         // MYMEMO: 本ではここでメッセージクリアのタイムアウト
     }
 
     updateScoreInfo(scores) {
-        this.doms.userInfo.textContent = scores[this.userColor];
-        this.doms.cpuInfo.textContent = scores[this.cpuColor];
+        this.doms.userInfo.textContent = scores[this.player1Color];
+        this.doms.cpuInfo.textContent = scores[this.player2Color];
     }
 
     putStone(i, j, colorName) {

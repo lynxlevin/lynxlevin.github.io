@@ -25,11 +25,8 @@
             <div id="left-wrapper">
                 <div id="top-btn-wrapper">
                     <button id="restart-game">RESTART</button>
-                    <!-- MYMEMO: タイマーは多分ない方がいい -->
-                    <!-- <p id="timer">00:00:00</p> -->
                 </div>
-                <!-- MYMEMO: ボードのサイズ指定できるようにしたい -->
-                <!-- <div id="inputs-wrapper" style="display: none;">
+                <!-- <div id="inputs-wrapper">
                     <div id="select-boxes-wrapper">
                         <div class="select" id="select1-div">
                             <select id="select1" class="select-tag"></select>
@@ -38,9 +35,14 @@
                     </div>
                     <p id="input-info"></p>
                 </div> -->
+                <select id="play-mode">
+                    <option value="pvc">Player vs CPU</option>
+                    <option value="pvp">Player vs Player</option>
+                    <option value="cvc">CPU vs CPU</option>
+                </select>
                 <div id="game-info-wrapper">
-                    <h3 id="info1"><span id="player_info_color"></span> (あなた): <span id="player_info_num"></span>枚</h3>
-                    <h3 id="info2"><span id="cpu_info_color"></span> (PC): <span id="cpu_info_num">枚</span>枚</h3>
+                    <h3 id="info1"><span id="player_info_color"></span> (<span id="player1_name"></span>): <span id="player_info_num"></span>枚</h3>
+                    <h3 id="info2"><span id="cpu_info_color"></span> (<span id="player2_name"></span>): <span id="cpu_info_num">枚</span>枚</h3>
                 </div>
             </div>
             <div id="center-wrapper">
