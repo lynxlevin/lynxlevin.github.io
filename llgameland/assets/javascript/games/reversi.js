@@ -126,11 +126,9 @@ class Reversi {
             this.screen.showMessage(text);
             isGameSet = true;
         } else if (!canFlipBlack) {
-            // MYMEMO: しばらくしたらメッセージを消したい
             this.screen.showMessage("黒スキップ 白の番");
             this.currentPlayer = this.player1Color === "black" ? this.player2 : this.player1;
         } else if (!canFlipWhite) {
-            // MYMEMO: しばらくしたらメッセージを消したい
             this.screen.showMessage("白スキップ 黒の番");
             this.currentPlayer = this.player1Color === "white" ? this.player2 : this.player1;
         } else {
@@ -349,20 +347,15 @@ class Player {
 class ScreenDoms {
     constructor(player1Color, player2Color) {
         this.doms = {
-            // select1: document.getElementById("select1"),
+            playMode: document.getElementById("play-mode"),
             player1Dom: document.getElementById("info1"),
             player2Dom: document.getElementById("info2"),
-            playMode: document.getElementById("play-mode"),
-            // MYMEMO: player1ColorName
-            userInfoColor: document.getElementById("player_info_color"),
-            // MYMEMO: player2ColorName
-            cpuInfoColor: document.getElementById("cpu_info_color"),
+            player1InfoColor: document.getElementById("player_info_color"),
+            player2InfoColor: document.getElementById("cpu_info_color"),
             player1Name: document.getElementById("player1_name"),
             player2Name: document.getElementById("player2_name"),
-            // MYMEMO: player1Score
-            userInfo: document.getElementById("player_info_num"),
-            // MYMEMO: player2Score
-            cpuInfo: document.getElementById("cpu_info_num"),
+            player1InfoScore: document.getElementById("player_info_num"),
+            player2InfoScore: document.getElementById("cpu_info_num"),
             board: document.getElementById("board"),
             clearMessage: document.getElementById("clear-message"),
             restartBtn: document.getElementById("restart-game"),
@@ -384,12 +377,12 @@ class ScreenDoms {
         while (parent.firstChild) {
             parent.removeChild(parent.firstChild);
         }
-        this.doms.userInfoColor.textContent = this.player1Color === "black" ? "黒" : "白";
-        this.doms.cpuInfoColor.textContent = this.player2Color === "black" ? "黒" : "白";
+        this.doms.player1InfoColor.textContent = this.player1Color === "black" ? "黒" : "白";
+        this.doms.player2InfoColor.textContent = this.player2Color === "black" ? "黒" : "白";
         this.doms.player1Name.textContent = player1Name;
         this.doms.player2Name.textContent = player2Name;
-        this.doms.userInfo.textContent = "";
-        this.doms.cpuInfo.textContent = "";
+        this.doms.player1InfoScore.textContent = "";
+        this.doms.player2InfoScore.textContent = "";
         this.doms.clearMessage.textContent = "";
     }
 
@@ -402,8 +395,8 @@ class ScreenDoms {
     }
 
     updateScoreInfo(scores) {
-        this.doms.userInfo.textContent = scores[this.player1Color];
-        this.doms.cpuInfo.textContent = scores[this.player2Color];
+        this.doms.player1InfoScore.textContent = scores[this.player1Color];
+        this.doms.player2InfoScore.textContent = scores[this.player2Color];
     }
 
     highlightUserTurn(color) {
@@ -421,9 +414,7 @@ class ScreenDoms {
 
     putStone(i, j, colorName) {
         const cell = document.getElementById("cell" + i + j);
-        // MYMEMO: cssを使うように
         cell.textContent = "●";
-        // MYMEMO: classList使いたい
         cell.className = "cell " + colorName;
     }
 
