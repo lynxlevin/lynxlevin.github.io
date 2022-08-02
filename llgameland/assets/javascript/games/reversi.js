@@ -71,6 +71,7 @@ class Reversi {
         const scores = this.board.calcScore();
         this.screen.updateScoreInfo(scores);
         this.judge(scores);
+        this.screen.highlightUserTurn(this.currentPlayer.colorName)
         this.currentPlayer.play(this.board, this);
     }
 
@@ -336,6 +337,8 @@ class ScreenDoms {
     constructor(player1Color, player2Color) {
         this.doms = {
             // select1: document.getElementById("select1"),
+            player1Dom: document.getElementById("info1"),
+            player2Dom: document.getElementById("info2"),
             playMode: document.getElementById("play-mode"),
             // MYMEMO: player1ColorName
             userInfoColor: document.getElementById("player_info_color"),
@@ -386,6 +389,19 @@ class ScreenDoms {
     updateScoreInfo(scores) {
         this.doms.userInfo.textContent = scores[this.player1Color];
         this.doms.cpuInfo.textContent = scores[this.player2Color];
+    }
+
+    highlightUserTurn(color) {
+        switch (color) {
+            case this.player1Color:
+                this.doms.player1Dom.classList.add("current_player");
+                this.doms.player2Dom.classList.remove("current_player");
+                break;
+            case this.player2Color:
+                this.doms.player2Dom.classList.add("current_player");
+                this.doms.player1Dom.classList.remove("current_player");
+                break;
+        }
     }
 
     putStone(i, j, colorName) {

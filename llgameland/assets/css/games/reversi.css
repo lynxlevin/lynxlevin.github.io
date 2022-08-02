@@ -19,3 +19,18 @@ td.black {
 td.white {
     color: white;
 }
+
+.current_player {
+    position: relative;
+}
+
+.current_player::before {
+    content: "★";
+    position: absolute;
+    left: -1.3rem;
+}
+
+#info1,#info2 {
+    width: 155px;
+    text-align: left;
+}
