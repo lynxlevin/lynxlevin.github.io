@@ -63,6 +63,7 @@ class Reversi {
 
     playerAct(i, j, player) {
         if (this.currentPlayer !== player) return;
+        this.screen.clearMessage();
         const result = this.flipStones(i, j, player.colorName);
         if (result) this.endTurn();
     }
@@ -70,9 +71,11 @@ class Reversi {
     endTurn() {
         const scores = this.board.calcScore();
         this.screen.updateScoreInfo(scores);
-        this.judge(scores);
-        this.screen.highlightUserTurn(this.currentPlayer.colorName)
-        this.currentPlayer.play(this.board, this);
+        const isGameSet = this.judge(scores);
+        if (!isGameSet) {
+            this.screen.highlightUserTurn(this.currentPlayer.colorName)
+            this.currentPlayer.play(this.board, this);
+        }
     }
 
     clickCell(e) {
@@ -105,25 +108,35 @@ class Reversi {
     }
 
     judge(scores) {
+        let isGameSet = false;
         const canFlipBlack = this.board.canFlip(this.colors.black);
         const canFlipWhite = this.board.canFlip(this.colors.white);
 
         const allCellsFilled = scores.black + scores.white === 64;
 
         if (allCellsFilled || !(canFlipBlack || canFlipWhite)) {
-            // MYMEMO: 結果をちゃんと表示したい
-            this.screen.showMessage("ゲームセット");
+            let text;
+            if (scores.black === scores.white) {
+                text = "ゲームセット 引き分け";
+            } else if (scores.black > scores.white) {
+                text = "ゲームセット 黒の勝ち";
+            } else {
+                text = "ゲームセット 白の勝ち";
+            }
+            this.screen.showMessage(text);
+            isGameSet = true;
         } else if (!canFlipBlack) {
             // MYMEMO: しばらくしたらメッセージを消したい
-            this.screen.showMessage("黒スキップ");
+            this.screen.showMessage("黒スキップ 白の番");
             this.currentPlayer = this.player1Color === "black" ? this.player2 : this.player1;
         } else if (!canFlipWhite) {
             // MYMEMO: しばらくしたらメッセージを消したい
-            this.screen.showMessage("白スキップ");
+            this.screen.showMessage("白スキップ 黒の番");
             this.currentPlayer = this.player1Color === "white" ? this.player2 : this.player1;
         } else {
             this.changeCurrentPlayer();
         }
+        return isGameSet;
     }
 
     changeCurrentPlayer() {
@@ -380,10 +393,12 @@ class ScreenDoms {
         this.doms.clearMessage.textContent = "";
     }
 
-    // MYMEMO: 白のターン、とか表示したい
     showMessage(message) {
         this.doms.clearMessage.textContent = message;
-        // MYMEMO: 本ではここでメッセージクリアのタイムアウト
+    }
+
+    clearMessage() {
+        this.doms.clearMessage.textContent = "";
     }
 
     updateScoreInfo(scores) {
